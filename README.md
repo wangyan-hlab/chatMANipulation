@@ -1,3 +1,9 @@
+# Installation
+安装[chatgpt-wrapper](https://github.com/mmabrouk/chatgpt-wrapper):
+```bash
+pip install git+https://github.com/mmabrouk/chatgpt-wrapper
+```
+
 # ChatGPT Prompts 技巧
 
 ## Clear Communication (CC) 原则
