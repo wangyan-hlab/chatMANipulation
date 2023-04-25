@@ -25,7 +25,7 @@ def generate_function_list(func):
     desc = func['description']
     arg_desc = ", ".join(f"{arg['name']}为:{arg['description']}" for arg in func['arguments'])
     ret = func['return']
-    return [f"{func_name}({args})", f"功能为:'{desc}'", f"参数为:'{arg_desc}'", f"返回值为:'{ret}'"]
+    return [f"{func_name}", f"功能为:'{desc}'", f"参数为:'{arg_desc}'", f"返回值为:'{ret}'"]
 
 # 生成输出列表
 output = [generate_function_list(func['function']) for func in functions]
