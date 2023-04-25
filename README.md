@@ -1,7 +1,33 @@
-# Installation
+# 安装
 安装[chatgpt-wrapper](https://github.com/mmabrouk/chatgpt-wrapper):
 ```bash
 pip install git+https://github.com/mmabrouk/chatgpt-wrapper
+```
+
+# 使用
+1. 打开终端，设置密钥，进入ChatGPT交互环境
+```bash
+$ . use_key.sh
+$ chatgpt
+```
+2. 在交互环境中向*ChatGPT*发送信息
+
+可以使用如下命令可以快速生成函数信息表:
+```python
+$ python script/readconfig.py --cwd=./config/ --file=$(filename)
+```
+其中，**./config/$(filename).yaml** 是函数信息的配置文件，可以根据需要进行编辑。
+将函数信息表与其他信息（提示词，任务描述，反馈等）整合到一起，发送给*ChatGPT*。
+可以参考```/exameples```中的示例。
+
+一些常用命令如下:
+```
+/login  # 登录
+/new    # 新建对话
+/chat   # 查看对话记录，如查看对话1的命令为 /chat 1
+/switch # 进入指定对话，如进入对话1的命令为 /switch 1
+/title  # 编辑对话标题，如编辑对话1标题的命令为 /title 1
+/delete # 删除对话记录，默认删除当前对话，如需指定则要加上对话编号，如 /delete 1
 ```
 
 # ChatGPT Prompts 技巧
@@ -39,7 +65,7 @@ pip install git+https://github.com/mmabrouk/chatgpt-wrapper
 ## :star: “Act as ...” 魔法
 ### 作用
 创建沉浸式的对话情景，模拟真实世界的场景
-### An Example
+### 示例
 - I want you to **act as** a javascript console. 
 - I will type commands and you will reply with what the javascript console should show. 
 - I want you to only reply with the terminal output inside one unique code block, and nothing else. 
