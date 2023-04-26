@@ -1,0 +1,84 @@
+---
+- function:
+    name: LoadDefaultProgConfig(flag,program_name)
+    description: 设置开机自动加载默认的作业程序
+    arguments:
+      - name: flag
+        type: int
+        description: 1-开机自动加载默认程序，0-不自动加载默认程序
+      - name: program_name
+        type: str
+        description: 作业程序名及路径，如“/fruser/movej.lua”，其中“/fruser/”为固定路径
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: ProgramLoad(program_name)
+    description: 加载指定的作业程序
+    arguments:
+      - name: program_name
+        type: str
+        description: 作业程序名及路径，如“/fruser/movej.lua”，其中“/fruser/”为固定路径
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: GetCurrentLine()
+    description: 获取当前机器人作业程序的执行行号
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0,line_num],失败：[errcode]
+
+- function:
+    name: ProgramRun()
+    description: 运行当前加载的作业程序
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: ProgramPause()
+    description: 暂停当前运行的作业程序
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: ProgramResume()
+    description: 恢复当前暂停的作业程序
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: ProgramStop()
+    description: 终止当前运行的作业程序
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: GetProgramState()
+    description: 获取机器人作业程序执行状态
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0,state],state:1-程序停止或无程序运行，2-程序运行中，3-程序暂停;失败：[errcode]
+
+- function:
+    name: GetLoadedProgram()
+    description: 获取已加载的作业程序名
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0,program_name],失败：[errcode]
