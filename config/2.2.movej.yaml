@@ -16,13 +16,13 @@
         type: int
         description: 工件号，[0~14]
       - name: vel
-        type: int
+        type: float
         description: 速度百分比，[0~100]
       - name: acc
-        type: int
+        type: float
         description: 加速度百分比，[0~100]，暂不开放
       - name: ovl
-        type: int
+        type: float
         description: 速度缩放因子，[0~100]
       - name: exaxis_pos
         type: float

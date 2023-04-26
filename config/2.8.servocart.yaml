@@ -1,0 +1,30 @@
+---
+- function:
+    name: ServoCart(mode,desc_pos,pos_gain,acc,vel,cmdT,filterT,gain)
+    description: 笛卡尔空间伺服模式运动
+    arguments:
+      - name: mode
+        type: int
+        description: [0]-绝对运动(基坐标系)，[1]-增量运动(基坐标系)，[2]-增量运动(工具坐标系)
+      - name: desc_pos
+        type: float
+        description: 目标笛卡尔位置/目标笛卡尔位置增量
+      - name: pos_gain
+        type: float
+        description: 位姿增量比例系数，仅在增量运动下生效，范围[0~1]
+      - name: acc
+        type: float
+        description: 加速度，范围[0~100]，暂不开放，默认为0
+      - name: vel
+        type: float
+        description: 速度，范围[0~100]，暂不开放，默认为0
+      - name: cmdT
+        type: float
+        description: 指令周期，单位[s]，[0.001~0.016]
+      - name: filterT
+        type: float
+        description: 滤波时间，单位[s]，暂不开放
+      - name: gain
+        type: float
+        description: 目标位置的比例放大器，暂不开放
+    return: 成功：[0],失败：[errcode]

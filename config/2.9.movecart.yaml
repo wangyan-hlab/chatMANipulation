@@ -1,0 +1,30 @@
+---
+- function:
+    name: MoveCart(desc_pos,tool,user,vel,acc,ovl,blendT,config)
+    description: 笛卡尔空间点到点运动
+    arguments:
+      - name: desc_pos
+        type: float
+        description: 目标笛卡尔位置
+      - name: tool
+        type: int
+        description: 工具号，[0~14]
+      - name: user
+        type: int
+        description: 工件号，[0~14]
+      - name: vel
+        type: float
+        description: 速度，范围[0~100]，暂不开放，默认为0
+      - name: acc
+        type: float
+        description: 加速度，范围[0~100]，暂不开放，默认为0
+      - name: ovl
+        type: float
+        description: 速度缩放因子，[0~100]
+      - name: blendT
+        type: float
+        description: [-1.0]-运动到位(阻塞)，[0~500]-平滑时间(非阻塞)，单位[ms]
+      - name: config
+        type: int
+        description: 关节配置，[-1]-参考当前关节位置求解，[0~7]-依据关节配置求解
+    return: 成功：[0],失败：[errcode]
