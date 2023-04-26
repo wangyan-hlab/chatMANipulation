@@ -1,9 +1,0 @@
----
-- function:
-    name: StopMotion()
-    description: 终止运动，使用终止运动需运动指令为非阻塞状态
-    arguments:
-      - name: n/a
-        type: n/a
-        description: n/a
-    return: 成功：[0],失败：[errcode]

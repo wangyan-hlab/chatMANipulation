@@ -5,7 +5,7 @@ import yaml
 # 可选flag:
 # cwd - 配置文件所在目录
 # file - 配置文件名
-# 示例: python script/readconfig.py --cwd=./config/ --file=jog
+# 示例: python script/readconfig.py --cwd=./config/2.frrobot_movement/ --file=robot_movement
 parser = argparse.ArgumentParser()
 parser.add_argument("--cwd", type=str, default="")
 parser.add_argument("--file", type=str, default="")

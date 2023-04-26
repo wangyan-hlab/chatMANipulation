@@ -1,0 +1,96 @@
+---
+- function:
+    name: SetAnticollision (mode,level,config)
+    description: 设置碰撞等级
+    arguments:
+      - name: mode
+        type: int
+        description: 0-等级，1-百分比
+      - name: level=[j1,j2,j3,j4,j5,j6]
+        type: list
+        description: 碰撞阈值
+      - name: config
+        type: int
+        description: 0-不更新配置文件，1-更新配置文件
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetCollisionStrategy (strategy)
+    description: 设置碰撞后策略
+    arguments:
+      - name: strategy
+        type: int
+        description: 0-报错暂停，1-继续运行
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetLimitPositive(p_limit)
+    description: 设置正限位
+    arguments:
+      - name: p_limit=[j1,j2,j3,j4,j5,j6]
+        type: list
+        description: 六个关节位置
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetLimitNegative(n_limit)
+    description: 设置负限位
+    arguments:
+      - name: n_limit=[j1,j2,j3,j4,j5,j6]
+        type: list
+        description: 六个关节位置
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: ResetAllError()
+    description: 错误状态清除，只能清除可复位的错误
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: FrictionCompensationOnOff(state)
+    description: 关节摩擦力补偿开关
+    arguments:
+      - name: state
+        type: int
+        description: 0-关，1-开
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetFrictionValue_level(coeff)
+    description: 设置关节摩擦力补偿系数-固定安装-正装
+    arguments:
+      - name: coeff=[j1,j2,j3,j4,j5,j6]
+        type: list
+        description: 六个关节补偿系数
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetFrictionValue_wall(coeff)
+    description: 设置关节摩擦力补偿系数-固定安装-侧装
+    arguments:
+      - name: coeff=[j1,j2,j3,j4,j5,j6]
+        type: list
+        description: 六个关节补偿系数
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetFrictionValue_ceiling(coeff)
+    description: 设置关节摩擦力补偿系数-固定安装-倒装
+    arguments:
+      - name: coeff=[j1,j2,j3,j4,j5,j6]
+        type: list
+        description: 六个关节补偿系数
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetFrictionValue_freedom(coeff)
+    description: 设置关节摩擦力补偿系数-自由安装
+    arguments:
+      - name: coeff=[j1,j2,j3,j4,j5,j6]
+        type: list
+        description: 六个关节补偿系数
+    return: 成功：[0],失败：[errcode]
