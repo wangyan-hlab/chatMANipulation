@@ -1,0 +1,84 @@
+---
+- function:
+    name: SetTPDParam(type,name,period_ms,di_choose,do_choose)
+    description: 设置轨迹记录参数
+    arguments:
+      - name: type
+        type: int
+        description: 数据类型，1-关节位置
+      - name: name
+        type: str
+        description: 轨迹名
+      - name: period_ms
+        type: int
+        description: 采样周期，固定值，2ms或4ms或8ms
+      - name: di_choose
+        type: int
+        description: DI选择,bit0~bit7对应控制箱DI0~DI7，bit8~bit9对应末端DI0~DI1，0-不选择，1-选择
+      - name: do_choose
+        type: int
+        description: DO选择,bit0~bit7对应控制箱DO0~DO7，bit8~bit9对应末端DO0~DO1，0-不选择，1-选择
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetTPDStart(type,name,period_ms,di_choose,do_choose)
+    description: 开始轨迹记录
+    arguments:
+      - name: type
+        type: int
+        description: 数据类型，1-关节位置
+      - name: name
+        type: str
+        description: 轨迹名
+      - name: period_ms
+        type: int
+        description: 采样周期，固定值，2ms或4ms或8ms
+      - name: di_choose
+        type: int
+        description: DI选择,bit0~bit7对应控制箱DI0~DI7，bit8~bit9对应末端DI0~DI1，0-不选择，1-选择
+      - name: do_choose
+        type: int
+        description: DO选择,bit0~bit7对应控制箱DO0~DO7，bit8~bit9对应末端DO0~DO1，0-不选择，1-选择
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetWebTPDStop()
+    description: 停止轨迹记录
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetTPDDelete(name)
+    description: 删除轨迹记录
+    arguments:
+      - name: name
+        type: str
+        description: 轨迹名
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: LoadTPD(name)
+    description: 轨迹预加载
+    arguments:
+      - name: name
+        type: str
+        description: 轨迹名
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: MoveTPD(name,blend,ovl)
+    description: 轨迹复现
+    arguments:
+      - name: name
+        type: str
+        description: 轨迹名
+      - name: blend
+        type: int
+        description: 是否平滑，0-不平滑，1-平滑
+      - name: ovl
+        type: float
+        description: 速度缩放因子，范围[0~100]
+    return: 成功：[0],失败：[errcode]

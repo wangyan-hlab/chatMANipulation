@@ -47,7 +47,7 @@
         description: 电流或电压值百分比，范围[0~100%]对应电流值[0~20mA]或电压[0~10V]
       - name: block
         type: int
-        description: [0]-阻塞，[1]-非阻塞
+        description: 阻塞-[0]，非阻塞-[1]
     return: 成功：[0],失败：[errcode]
 
 - function:
@@ -62,7 +62,7 @@
         description: 电流或电压值百分比，范围[0~100%]对应电流值[0~20mA]或电压[0~10V]
       - name: block
         type: int
-        description: [0]-阻塞，[1]-非阻塞
+        description: 阻塞-[0]，非阻塞-[1]
     return: 成功：[0],失败：[errcode]
   
 - function:
@@ -74,8 +74,8 @@
         description: io编号，范围[0~15]
       - name: block
         type: int
-        description: [0]-阻塞，[1]-非阻塞
-    return: 成功：[0,di],di: 0-低电平，1-高电平;失败：[errcode]
+        description: 阻塞-[0]，非阻塞-[1]
+    return: 成功：返回[0,di],di:0-低电平，1-高电平;失败：[errcode]
   
 - function:
     name: GetToolDI(id,block)
@@ -86,8 +86,8 @@
         description: io编号，范围[0~1]
       - name: block
         type: int
-        description: [0]-阻塞，[1]-非阻塞
-    return: 成功：[0,di],di: 0-低电平，1-高电平;失败：[errcode]
+        description: 阻塞-[0]，非阻塞-[1]
+    return: 成功：[0,di],di:0-低电平，1-高电平;失败：[errcode]
 
 - function:
     name: WaitDI(id,status,maxtime,opt)
@@ -113,7 +113,7 @@
     arguments:
       - name: mode
         type: int
-        description: [0]-多路与，[1]-多路或
+        description: 多路与-[0]，多路或-[1]
       - name: id
         type: int
         description: io编号，bit0~bit7对应DI0~DI7，bit8~bit15对应CI0~CI7

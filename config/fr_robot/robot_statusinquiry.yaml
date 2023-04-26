@@ -1,0 +1,210 @@
+---
+- function:
+    name: GetRobotInstallAngle()
+    description: 获取机器人安装角度
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0,yangle,zangle],yangle-倾斜角，zangle-旋转角;失败：[errcode]
+
+- function:
+    name: GetSysVarValue(id)
+    description: 获取系统变量值
+    arguments:
+      - name: id
+        type: int
+        description: 系统变量编号，范围[1~20]
+    return: 成功：[0,var_value],失败：[errcode]
+
+- function:
+    name: GetActualJointPosDegree(flag)
+    description: 获取关节当前位置(角度)
+    arguments:
+      - name: flag
+        type: int
+        description: 0-阻塞，1-非阻塞
+    return: 成功：[0,joint_pos],joint_pos=[j1,j2,j3,j4,j5,j6];失败：[errcode]
+
+- function:
+    name: GetActualJointPosRadian(flag)
+    description: 获取关节当前位置(弧度)
+    arguments:
+      - name: flag
+        type: int
+        description: 0-阻塞，1-非阻塞
+    return: 成功：[0,joint_pos],joint_pos=[j1,j2,j3,j4,j5,j6];失败：[errcode]
+
+- function:
+    name: GetActualTCPPose(flag)
+    description: 获取当前工具位姿
+    arguments:
+      - name: flag
+        type: int
+        description: 0-阻塞，1-非阻塞
+    return: 成功：[0,tcp_pose],tcp_pose=[x,y,z,rx,ry,rz];失败：[errcode]
+
+- function:
+    name: GetActualTCPNum(flag)
+    description: 获取当前工具坐标系编号
+    arguments:
+      - name: flag
+        type: int
+        description: 0-阻塞，1-非阻塞
+    return: 成功：[0,tool_id],失败：[errcode]
+
+- function:
+    name: GetActualWObjNum(flag)
+    description: 获取当前工件坐标系编号
+    arguments:
+      - name: flag
+        type: int
+        description: 0-阻塞，1-非阻塞
+    return: 成功：[0,wobj_id],失败：[errcode]
+
+- function:
+    name: GetActualToolFlangePose(flag)
+    description: 获取当前末端法兰位姿
+    arguments:
+      - name: flag
+        type: int
+        description: 0-阻塞，1-非阻塞
+    return: 成功：[0,flange_pose],flange_pose=[x,y,z,rx,ry,rz];失败：[errcode]
+
+- function:
+    name: GetInverseKin(type,desc_pos,config)
+    description: 逆运动学，笛卡尔位姿求解关节位置
+    arguments:
+      - name: type
+        type: int
+        description: 0-绝对位姿(基坐标系)，1-相对位姿（基坐标系），2-相对位姿（工具坐标系）
+      - name: desc_pose
+        type: float
+        description: 工具位姿，[x,y,z,rx,ry,rz]，单位[mm][°]
+      - name: config
+        type: int
+        description: 关节配置，[-1]-参考当前关节位置求解，[0~7]-依据关节配置求解
+    return: 成功：[0,joint_pos],joint_pos=[j1,j2,j3,j4,j5,j6];失败：[errcode]
+
+- function:
+    name: GetInverseKinRef(desc_pos,joint_pos_ref)
+    description: 逆运动学，工具位姿求解关节位置，参考指定关节位置求解
+    arguments:
+      - name: desc_pose
+        type: float
+        description: 工具位姿，[x,y,z,rx,ry,rz]，单位[mm][°]
+      - name: joint_pos_ref
+        type: float
+        description: 关节参考位置，[j1,j2,j3,j4,j5,j6]，单位[°]
+    return: 成功：[0,joint_pos],joint_pos=[j1,j2,j3,j4,j5,j6];失败：[errcode]
+
+- function:
+    name: GetInverseKinHasSolution(desc_pos,joint_pos_ref)
+    description: 逆运动学，工具位姿求解关节位置 是否有解
+    arguments:
+      - name: desc_pose
+        type: float
+        description: 工具位姿，[x,y,z,rx,ry,rz]，单位[mm][°]
+      - name: joint_pos_ref
+        type: float
+        description: 关节参考位置，[j1,j2,j3,j4,j5,j6]，单位[°]
+    return: 成功：[0,result],“True”-有解，“False”-无解;失败：[errcode]
+
+- function:
+    name: GetForwardKin(joint_pos)
+    description: 正运动学，关节位置求解工具位姿
+    arguments:
+      - name: joint_pos
+        type: float
+        description: 关节位置，[j1,j2,j3,j4,j5,j6]，单位[°]
+    return: 成功：[0,desc_pos],desc_pos=[x,y,z,rx,ry,rz]:工具位姿，单位[mm][°];失败：[errcode]
+
+- function:
+    name: GetJointTorques(flag)
+    description: 获取当前关节转矩
+    arguments:
+      - name: flag
+        type: int
+        description: 0-阻塞，1-非阻塞
+    return: 成功：[0,torques],torques=[j1,j2,j3,j4,j5,j6];失败：[errcode]
+
+- function:
+    name: GetTargetPayload(flag)
+    description: 获取当前负载的质量
+    arguments:
+      - name: flag
+        type: int
+        description: 0-阻塞，1-非阻塞
+    return: 成功：[0,weight],单位[kg];失败：[errcode]
+
+- function:
+    name: GetTargetPayloadCog(flag)
+    description: 获取当前负载的质心
+    arguments:
+      - name: flag
+        type: int
+        description: 0-阻塞，1-非阻塞
+    return: 成功：[0,cog], cog=[x,y,z]:质心坐标，单位[mm];失败：[errcode]
+
+- function:
+    name: GetTCPOffset(flag)
+    description: 获取当前工具坐标系
+    arguments:
+      - name: flag
+        type: int
+        description: 0-阻塞，1-非阻塞
+    return: 成功：[0,tcp_offset], tcp_offset=[x,y,z,rx,ry,rz]:相对位姿，单位[mm][°];失败：[errcode]
+
+- function:
+    name: GetWObjOffset(flag)
+    description: 获取当前工件坐标系
+    arguments:
+      - name: flag
+        type: int
+        description: 0-阻塞，1-非阻塞
+    return: 成功：[0,wobj_offset], wobj _offset=[x,y,z,rx,ry,rz]:相对位姿，单位[mm][°];失败：[errcode]
+
+- function:
+    name: GetJointSoftLimitDeg(flag)
+    description: 获取关节软限位角度
+    arguments:
+      - name: flag
+        type: int
+        description: 0-阻塞，1-非阻塞
+    return: 成功：[[0, j1min,j1max,j2min,j2max,j3min,j3max,j4min,j4max,j5min,j5max,j6min,j6max] :轴1~轴6关节负限位与正限位，单位[mm];失败：[errcode]
+
+- function:
+    name: GetSystemClock()
+    description: 获取系统时间
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0,t_ms]:单位[ms],失败：[errcode]
+
+- function:
+    name: GetRobotCurJointsConfig()
+    description: 获取机器人当前关节配置
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0,config]:范围[0~7],失败：[errcode]
+
+- function:
+    name: GetDefaultTransVel()
+    description: 获取默认速度
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0,vel]:单位[mm/s],失败：[errcode]
+
+- function:
+    name: GetRobotMotionDone()
+    description: 查询机器人运动是否完成
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0,state],state:0-未完成，1-完成;失败：[errcode]

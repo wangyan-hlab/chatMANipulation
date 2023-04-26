@@ -1,0 +1,63 @@
+---
+- function:
+    name: RPC(ip)
+    description: 实例化一个机器人对象
+    arguments:
+      - name: ip
+        type: str
+        description: 机器人的IP地址，默认出厂IP为“192.168.58.2”
+    return: 成功：返回一个机器人对象,失败：创建的对象会被销毁
+
+- function:
+    name: GetSDKVersion()
+    description: 查询SDK版本号
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0,version],失败：[errcode]
+
+- function:
+    name: GetControllerIP()
+    description: 查询控制器IP
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0,IP],失败：[errcode]
+
+- function:
+    name: Mode(state)
+    description: 控制机器人手自动模式切换
+    arguments:
+      - name: state
+        type: int
+        description: 1-手动模式，0-自动模式
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: DragTeachSwitch(state)
+    description: 控制机器人进入或退出拖动示教模式
+    arguments:
+      - name: state
+        type: int
+        description: 1-进入拖动示教模式，0-退出拖动示教模式
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: IsInDragTeach()
+    description: 查询机器人是否处于拖动示教模式
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0,state]，state:0-非拖动示教模式，1-拖动示教模式;失败：[errcode]
+
+- function:
+    name: RobotEnable(state)
+    description: 控制机器人上使能或下使能
+    arguments:
+      - name: state
+        type: int
+        description: 1-上使能，0-下使能
+    return: 成功：[0],失败：[errcode]

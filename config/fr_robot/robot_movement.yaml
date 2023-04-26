@@ -71,10 +71,10 @@
         description: 外部轴1位置~外部轴4位置,单位mm
       - name: blendT
         type: int
-        description: [-1.0]-运动到位(阻塞)，[0~500]-平滑时间(非阻塞)，单位[ms]
+        description: 运动到位(阻塞)-[-1.0]，平滑时间(非阻塞)-[0~500]，单位[ms]
       - name: offset_flag
         type: int
-        description: [0]-不偏移，[1]-工件/基坐标系下偏移，[2]-工具坐标系下偏移
+        description: 不偏移-[0]，工件/基坐标系下偏移-[1]，工具坐标系下偏移-[2]
       - name: offset_pos
         type: float
         description: 位姿偏移量，单位[mm][°]
@@ -110,13 +110,13 @@
         description: 外部轴1位置~外部轴4位置,单位mm
       - name: blendR
         type: int
-        description: [-1.0]-运动到位(阻塞)，[0~500]-平滑时间(非阻塞)，单位[ms]
+        description: 运动到位(阻塞)-[-1.0]，平滑时间(非阻塞)-[0~500]，单位[ms]
       - name: search
         type: int
-        description: [0]-不焊丝寻位，[1]-焊丝寻位
+        description: 不焊丝寻位-[0]，焊丝寻位-[1]
       - name: offset_flag
         type: int
-        description: [0]-不偏移，[1]-工件/基坐标系下偏移，[2]-工具坐标系下偏移
+        description: 不偏移-[0]，工件/基坐标系下偏移[1]，工具坐标系下偏移-[2]
       - name: offset_pos
         type: float
         description: 位姿偏移量，单位[mm][°]
@@ -149,7 +149,7 @@
         description: 外部轴1位置~外部轴4位置,单位mm
       - name: poffset_flag
         type: int
-        description: [0]-不偏移，[1]-工件/基坐标系下偏移，[2]-工具坐标系下偏移
+        description: 不偏移-[0]，工件/基坐标系下偏移-[1]，工具坐标系下偏移-[2]
       - name: offset_pos_p
         type: float
         description: 偏移量，单位[mm][°]
@@ -161,7 +161,7 @@
         description: 目标点笛卡尔位姿，单位[mm][°]
       - name: ttool
         type: int
-        description: 工具号，[0~14]
+        description: 工具号，[0~14][0]-不偏移，[1]-工件/基坐标系下偏移
       - name: tuser
         type: int
         description: 工件号，[0~14]
@@ -176,7 +176,7 @@
         description: 外部轴1位置~外部轴4位置
       - name: toffset_flag
         type: int
-        description: [0]-不偏移，[1]-工件/基坐标系下偏移，[2]-工具坐标系下偏移
+        description: 不偏移-[0]，工件/基坐标系下偏移-[1]，工具坐标系下偏移-[2]
       - name: offset_pos_t
         type: float
         description: 偏移量，单位[mm][°]
@@ -185,7 +185,7 @@
         description: 速度缩放因子，[0~100]
       - name: blendR
         type: float
-        description: [-1.0]-运动到位(阻塞)，[0~1000]-平滑半径(非阻塞)，单位[mm]
+        description: 运动到位(阻塞)-[-1.0]，平滑半径(非阻塞)-[0~1000]，单位[mm]
     return: 成功：[0],失败：[errcode]
 
 - function:
@@ -239,7 +239,7 @@
         description: 速度缩放因子，[0~100]
       - name: offset_flag
         type: int
-        description: [0]-不偏移，[1]-工件/基坐标系下偏移，[2]-工具坐标系下偏移
+        description: 不偏移-[0]，工件/基坐标系下偏移-[1]，工具坐标系下偏移-[2]
       - name: offset_pos
         type: float
         description: 偏移量，单位[mm][°]
@@ -275,13 +275,13 @@
         description: 速度缩放因子，[0~100]
       - name: offset_flag
         type: int
-        description: [0]-不偏移，[1]-工件/基坐标系下偏移，[2]-工具坐标系下偏移
+        description: 不偏移-[0]，工件/基坐标系下偏移-[1]，工具坐标系下偏移-[2]
       - name: offset_pos
         type: float
         description: 位姿偏移量，单位[mm][°]
       - name: param
         type: list
-        description: [circle_num,circle_angle,rad_init,rad_add,rotaxis_add,rot_direction]，circle_num:螺旋圈数，circle_angle:螺旋倾角，rad_init:螺旋初始半径，rad_add:半径增量，rotaxis_add:转轴方向增量，rot_direction:旋转方向，0-顺时针，1-逆时针
+        description: 列表[circle_num,circle_angle,rad_init,rad_add,rotaxis_add,rot_direction]，其中circle_num:螺旋圈数，circle_angle:螺旋倾角，rad_init:螺旋初始半径，rad_add:半径增量，rotaxis_add:转轴方向增量，rot_direction:旋转方向，0-顺时针，1-逆时针
     return: 成功：[0],失败：[errcode]
 
 - function:
@@ -314,7 +314,7 @@
     arguments:
       - name: mode
         type: int
-        description: [0]-绝对运动(基坐标系)，[1]-增量运动(基坐标系)，[2]-增量运动(工具坐标系)
+        description: 绝对运动(基坐标系)-[0]，增量运动(基坐标系)-[1]，增量运动(工具坐标系)-[2]
       - name: desc_pos
         type: float
         description: 目标笛卡尔位置/目标笛卡尔位置增量
@@ -362,7 +362,7 @@
         description: 速度缩放因子，[0~100]
       - name: blendT
         type: float
-        description: [-1.0]-运动到位(阻塞)，[0~500]-平滑时间(非阻塞)，单位[ms]
+        description: 运动到位(阻塞)-[-1.0]，平滑时间(非阻塞)-[0~500]，单位[ms]
       - name: config
         type: int
         description: 关节配置，[-1]-参考当前关节位置求解，[0~7]-依据关节配置求解
@@ -449,7 +449,7 @@
         description: 速度缩放因子，[0~100]
       - name: blendR
         type: float
-        description: [0~1000]-平滑半径，单位[mm]
+        description: 平滑半径-[0~1000]，单位[mm]
       - name: lastFlag
         type: int
         description: 是否为最后一个点，0-否，1-是
