@@ -12,13 +12,13 @@ $ chatgpt
 ```
 2. 在交互环境中向*ChatGPT*发送信息
 
-可以使用如下命令可以快速生成函数信息表:
+可以使用如下命令快速生成函数信息表:
 ```python
-$ python script/readconfig.py --cwd=./config/ --file=$(filename)
+$ python script/readconfig.py --cwd=./config/ --file=$(filename)  # filename不包含扩展名
 ```
-其中，**./config/$(filename).yaml** 是函数信息的配置文件，可以根据需要进行编辑。
+其中，```./config/$(filename).yaml``` 是函数信息的配置文件，可以根据需要进行编辑。
 将函数信息表与其他信息（提示词，任务描述，反馈等）整合到一起，发送给*ChatGPT*。
-可以参考```/exameples```中的示例。
+可以参考```/examples/fr_robot```中的示例。
 
 一些常用命令如下:
 ```
