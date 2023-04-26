@@ -1,7 +1,7 @@
 ---
 - function:
-    name: Circle(joint_pos_p,desc_pos_p,ptool,puser,pvel,pacc,exaxis_pos_p,joint_pos_t,desc_pos_t,ttool,tuser,tvel,tacc,exaxis_pos_t,ovl,offset_flag,offset_pos)
-    description: 笛卡尔空间整圆运动
+    name: MoveC(joint_pos_p,desc_pos_p,ptool,puser,pvel,pacc,exaxis_pos_p,poffset_flag,offset_pos_p,joint_pos_t,desc_pos_t,ttool,tuser,tvel,tacc,exaxis_pos_t ,toffset_flag,offset_pos_t,ovl,blendR)
+    description: 笛卡尔空间圆弧运动
     arguments:
       - name: joint_pos_p
         type: float
@@ -16,14 +16,20 @@
         type: int
         description: 工件号，[0~14]
       - name: pvel
-        type: int
+        type: float
         description: 速度百分比，[0~100]
       - name: pacc
-        type: int
+        type: float
         description: 加速度百分比，[0~100]，暂不开放
       - name: exaxis_pos_p
         type: float
         description: 外部轴1位置~外部轴4位置,单位mm
+      - name: poffset_flag
+        type: int
+        description: [0]-不偏移，[1]-工件/基坐标系下偏移，[2]-工具坐标系下偏移
+      - name: offset_pos_p
+        type: float
+        description: 偏移量，单位[mm][°]
       - name: joint_pos_t
         type: float
         description: 目标点关节位置，单位[°]
@@ -37,21 +43,24 @@
         type: int
         description: 工件号，[0~14]
       - name: tvel
-        type: int
+        type: float
         description: 速度百分比，[0~100]
       - name: tacc
-        type: int
+        type: float
         description: 加速度百分比，[0~100]，暂不开放
       - name: exaxis_pos_t
         type: float
         description: 外部轴1位置~外部轴4位置
-      - name: ovl
-        type: int
-        description: 速度缩放因子，[0~100]
-      - name: offset_flag
+      - name: toffset_flag
         type: int
         description: [0]-不偏移，[1]-工件/基坐标系下偏移，[2]-工具坐标系下偏移
-      - name: offset_pos
+      - name: offset_pos_t
         type: float
         description: 偏移量，单位[mm][°]
+      - name: ovl
+        type: float
+        description: 速度缩放因子，[0~100]
+      - name: blendR
+        type: float
+        description: [-1.0]-运动到位(阻塞)，[0~1000]-平滑半径(非阻塞)，单位[mm]
     return: 成功：[0],失败：[errcode]
