@@ -1,0 +1,213 @@
+---
+- function:
+    name: SetDO(id,status,smooth,block)
+    description: 设置控制箱数字量输出
+    arguments:
+      - name: id
+        type: int
+        description: io编号，范围[0~15]
+      - name: status
+        type: int
+        description: 0-关，1-开
+      - name: smooth
+        type: int
+        description: 0-不平滑，1-平滑
+      - name: block
+        type: int
+        description: 0-阻塞，1-非阻塞
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetToolDO(id,status,smooth,block)
+    description: 设置工具数字量输出
+    arguments:
+      - name: id
+        type: int
+        description: io编号，范围[0~1]
+      - name: status
+        type: int
+        description: 0-关，1-开
+      - name: smooth
+        type: int
+        description: 0-不平滑，1-平滑
+      - name: block
+        type: int
+        description: 0-阻塞，1-非阻塞
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetAO(id,value,block)
+    description: 设置控制箱模拟量输出
+    arguments:
+      - name: id
+        type: int
+        description: io编号，范围[0~1]
+      - name: value
+        type: float
+        description: 电流或电压值百分比，范围[0~100%]对应电流值[0~20mA]或电压[0~10V]
+      - name: block
+        type: int
+        description: [0]-阻塞，[1]-非阻塞
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetToolAO(id,value,block)
+    description: 设置工具模拟量输出
+    arguments:
+      - name: id
+        type: int
+        description: io编号，范围[0]
+      - name: value
+        type: float
+        description: 电流或电压值百分比，范围[0~100%]对应电流值[0~20mA]或电压[0~10V]
+      - name: block
+        type: int
+        description: [0]-阻塞，[1]-非阻塞
+    return: 成功：[0],失败：[errcode]
+  
+- function:
+    name: GetDI(id,block)
+    description: 获取控制箱数字量输入
+    arguments:
+      - name: id
+        type: int
+        description: io编号，范围[0~15]
+      - name: block
+        type: int
+        description: [0]-阻塞，[1]-非阻塞
+    return: 成功：[0,di],di: 0-低电平，1-高电平;失败：[errcode]
+  
+- function:
+    name: GetToolDI(id,block)
+    description: 获取工具数字量输入
+    arguments:
+      - name: id
+        type: int
+        description: io编号，范围[0~1]
+      - name: block
+        type: int
+        description: [0]-阻塞，[1]-非阻塞
+    return: 成功：[0,di],di: 0-低电平，1-高电平;失败：[errcode]
+
+- function:
+    name: WaitDI(id,status,maxtime,opt)
+    description: 等待控制箱数字量输入
+    arguments:
+      - name: id
+        type: int
+        description: io编号，范围[0~15]
+      - name: status
+        type: int
+        description: 0-关，1-开
+      - name: maxtime
+        type: float
+        description: 最大等待时间，单位[ms]
+      - name: opt
+        type: int
+        description: 超时后策略，0-程序停止并提示超时，1-忽略超时提示程序继续执行，2-一直等待
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: WaitMultiDI(mode,id,status,maxtime,opt)
+    description: 等待控制箱多路数字量输入
+    arguments:
+      - name: mode
+        type: int
+        description: [0]-多路与，[1]-多路或
+      - name: id
+        type: int
+        description: io编号，bit0~bit7对应DI0~DI7，bit8~bit15对应CI0~CI7
+      - name: status(uint16_t)
+        type: int
+        description: bit0~bit7对应DI0~DI7状态，bit8~bit15对应CI0~CI7状态位的状态[0]-关，[1]-开
+      - name: maxtime
+        type: float
+        description: 最大等待时间，单位[ms]
+      - name: opt
+        type: int
+        description: 超时后策略，0-程序停止并提示超时，1-忽略超时提示程序继续执行，2-一直等待
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: WaitToolDI(id,status,maxtime,opt)
+    description: 等待末端数字量输入
+    arguments:
+      - name: id
+        type: int
+        description: io编号，范围[0~1]
+      - name: status
+        type: int
+        description: 0-关，1-开
+      - name: maxtime
+        type: float
+        description: 最大等待时间，单位[ms]
+      - name: opt
+        type: int
+        description: 超时后策略，0-程序停止并提示超时，1-忽略超时提示程序继续执行，2-一直等待
+    return: 成功：[0],失败：[errcode]
+  
+- function:
+    name: GetAI(id,block)
+    description: 获取控制箱模拟量输入
+    arguments:
+      - name: id
+        type: int
+        description: io编号，范围[0~1]
+      - name: block
+        type: int
+        description: 0-阻塞，1-非阻塞
+    return: 成功：[0,value], value:输入电流或电压值百分比，范围[0~100]对应电流值[0~20mA]或电压[0~10V];失败：[errcode]
+
+- function:
+    name: GetToolAI(id,block)
+    description: 获取末端模拟量输入
+    arguments:
+      - name: id
+        type: int
+        description: io编号，范围[0]
+      - name: block
+        type: int
+        description: 0-阻塞，1-非阻塞
+    return: 成功：[0,value], value:输入电流或电压值百分比，范围[0~100]对应电流值[0~20mA]或电压[0~10V];失败：[errcode]
+  
+- function:
+    name: WaitAI(id,sign,value,maxtime,opt)
+    description: 等待控制箱模拟量输入
+    arguments:
+      - name: id
+        type: int
+        description: io编号，范围[0~1]
+      - name: sign
+        type: int
+        description: 0-大于，1-小于
+      - name: value
+        type: float
+        description: 输入电流或电压值百分比，范围[0~100]对应电流值[0~20mA]或电压[0~10V]
+      - name: maxtime
+        type: float
+        description: 最大等待时间，单位[ms]
+      - name: opt
+        type: int
+        description: 超时后策略，0-程序停止并提示超时，1-忽略超时提示程序继续执行，2-一直等待
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: WaitToolAI(id,sign,value,maxtime,opt)
+    description: 等待末端模拟量输入
+    arguments:
+      - name: id
+        type: int
+        description: io编号，范围[0]
+      - name: sign
+        type: int
+        description: 0-大于，1-小于
+      - name: value
+        type: float
+        description: 输入电流或电压值百分比，范围[0~100]对应电流值[0~20mA]或电压[0~10V]
+      - name: maxtime
+        type: float
+        description: 最大等待时间，单位[ms]
+      - name: opt
+        type: int
+        description: 超时后策略，0-程序停止并提示超时，1-忽略超时提示程序继续执行，2-一直等待
+    return: 成功：[0],失败：[errcode]

@@ -1,0 +1,165 @@
+---
+- function:
+    name: SetSpeed(vel)
+    description: 设置全局速度
+    arguments:
+      - name: vel
+        type: float
+        description: 速度百分比，范围[0~100]
+    return: 成功：[0],失败：[errcode]
+  
+- function:
+    name: SetSysVarValue(id,value)
+    description: 设置系统变量
+    arguments:
+      - name: id
+        type: int
+        description: 变量编号，范围[1~20]
+      - name: value
+        type: float
+        description: 变量值
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetToolCoord(id,t_coord,type,install)
+    description: 设置工具坐标系
+    arguments:
+      - name: id
+        type: int
+        description: 坐标系编号，范围[0~14]
+      - name: t_coord
+        type: float
+        description: 工具中心点相对末端法兰中心位姿，单位[mm][°]
+      - name: type
+        type: int
+        description: 0-工具坐标系，1-传感器坐标系
+      - name: install
+        type: int
+        description: 安装位置，0-机器人末端，1-机器人外部
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetToolList(id,t_coord ,type,install)
+    description: 设置工具坐标系列表
+    arguments:
+      - name: id
+        type: int
+        description: 坐标系编号，范围[0~14]
+      - name: t_coord
+        type: float
+        description: 工具中心点相对末端法兰中心位姿，单位[mm][°]
+      - name: type
+        type: int
+        description: 0-工具坐标系，1-传感器坐标系
+      - name: install
+        type: int
+        description: 安装位置，0-机器人末端，1-机器人外部
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetExToolCoord(id,etcp ,etool)
+    description: 设置外部工具坐标系
+    arguments:
+      - name: id
+        type: int
+        description: 坐标系编号，范围[0~14]
+      - name: etcp
+        type: float
+        description: 外部工具坐标系，单位[mm][°]
+      - name: etool
+        type: float
+        description: 末端工具坐标系，单位[mm][°]
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetExToolList(id,etcp ,etool)
+    description: 设置外部工具坐标系列表
+    arguments:
+      - name: id
+        type: int
+        description: 坐标系编号，范围[0~14]
+      - name: etcp
+        type: float
+        description: 外部工具坐标系，单位[mm][°]
+      - name: etool
+        type: float
+        description: 末端工具坐标系，单位[mm][°]
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetWObjCoord(id,w_coord)
+    description: 设置工件坐标系
+    arguments:
+      - name: id
+        type: int
+        description: 坐标系编号，范围[0~14]
+      - name: w_coord
+        type: float
+        description: 坐标系相对位姿，单位[mm][°]
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetWObjList(id,w_coord)
+    description: 设置工件坐标系列表
+    arguments:
+      - name: id
+        type: int
+        description: 坐标系编号，范围[0~14]
+      - name: w_coord
+        type: float
+        description: 坐标系相对位姿，单位[mm][°]
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetLoadWeight(weight)
+    description: 设置末端负载重量
+    arguments:
+      - name: weight
+        type: float
+        description: 单位[kg]
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetRobotInstallPos(method)
+    description: 设置机器人安装方式-固定安装
+    arguments:
+      - name: method
+        type: int
+        description: 0-平装，1-侧装，2-挂装
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetRobotInstallAngle(yangle,zangle)
+    description: 设置机器人安装角度-自由安装
+    arguments:
+      - name: yangle
+        type: float
+        description: 倾斜角
+      - name: zangle
+        type: float
+        description: 旋转角
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: SetLoadCoord(x,y,z)
+    description: 设置末端负载质心坐标
+    arguments:
+      - name: x
+        type: float
+        description: 质心x坐标，单位[mm]
+      - name: y
+        type: float
+        description: 质心y坐标，单位[mm]
+      - name: z
+        type: float
+        description: 质心z坐标，单位[mm]
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: WaitMs(t_ms)
+    description: 等待指定时间
+    arguments:
+      - name: t_ms
+        type: float
+        description: 等待时间，单位[ms]
+    return: 成功：[0],失败：[errcode]
