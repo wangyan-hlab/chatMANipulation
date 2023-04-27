@@ -1,0 +1,42 @@
+---
+- function:
+    name: StartJOG(ref,nb,dir,vel,acc,max_dis)
+    description: jog点动
+    arguments:
+      - name: ref
+        type: int
+        description: 0-关节点动,2-基坐标系点动,4-工具坐标系点动,8-工件坐标系点动
+      - name: nb
+        type: int
+        description: 1-1关节(x轴),2-2关节(y轴),3-3关节(z轴),4-4关节(rx),5-5关节(ry),6-6关节(rz)
+      - name: dir
+        type: int
+        description: 0-负方向,1-正方向
+      - name: vel
+        type: float
+        description: 速度百分比，[0~100]
+      - name: acc
+        type: float
+        description: 加速度百分比，[0~100]
+      - name: max_dis
+        type: float
+        description: 单次点动最大角度/距离,单位°或mm
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: StopJOG(ref)
+    description: jog点动减速停止
+    arguments:
+      - name: ref
+        type: int
+        description: 1-关节点动停止,3-基坐标系点动停止,5-工具坐标系点动停止,9-工件坐标系点动停止
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: ImmStopJOG()
+    description: jog点动立即停止
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0],失败：[errcode]
