@@ -1,0 +1,30 @@
+---
+- function:
+    name: StopMotion()
+    description: 终止运动，使用终止运动需运动指令为非阻塞状态
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0],失败：[errcode]
+
+- function:
+    name: PointsOffsetEnable(flag,offset_pos)
+    description: 点位整体偏移开始
+    arguments:
+      - name: flag
+        type: int
+        description: 0-基坐标或工件坐标系下偏移， 2-工具坐标系下偏移
+      - name: offset_pos
+        type: float
+        description: 偏移量，单位[mm][°]
+    return: 成功：[0],失败：[errcode]
+    
+- function:
+    name: PointsOffsetDisable()
+    description: 点位整体偏移结束
+    arguments:
+      - name: n/a
+        type: n/a
+        description: n/a
+    return: 成功：[0],失败：[errcode]

@@ -19,7 +19,7 @@ yaml配置文件中包含了FR系列协作机器人[Python SDK](https://fr-docum
 
 可以使用如下命令快速生成函数信息表:
 ```python
-$ python script/readconfig.py --cwd=./config/ --file=$(filename)  # filename不包含扩展名
+$ python script/readconfig.py --cwd=./config/fr_robot --file=$(filename)  # filename不包含扩展名
 ```
 将函数信息表与其他信息（提示词，任务描述，反馈等）整合到一起，发送给*ChatGPT*。
 可以参考```/examples/fr_robot```中的示例。

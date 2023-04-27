@@ -14,7 +14,7 @@ $ chatgpt
 
 可以使用如下命令快速生成函数信息表:
 ```python
-$ python script/readconfig.py --cwd=./config/ --file=$(filename)  # filename不包含扩展名
+$ python script/readconfig.py --cwd=./config/fr_robot --file=$(filename)  # filename不包含扩展名
 ```
 其中，```./config/$(filename).yaml``` 是函数信息的配置文件，可以根据需要进行编辑。
 将函数信息表与其他信息（提示词，任务描述，反馈等）整合到一起，发送给*ChatGPT*。
