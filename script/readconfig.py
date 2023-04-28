@@ -15,7 +15,7 @@ if args.cwd:
     os.chdir(args.cwd)
 
 # 读取yaml配置文件
-with open(args.file+".yaml", "r") as f:
+with open(args.file+".yaml", "rb") as f:
     functions = yaml.safe_load(f)
 
 # 定义一个函数，用来生成输出列表中的每个子列表
