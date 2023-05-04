@@ -40,6 +40,9 @@ class FRChatBot(object):
         self.messages.append(self.build_message('assistant', response))
 
     def generate_function_list(self, file):
+        """
+            Reading function infos from a YAML file
+        """
         with open(file, "rb") as f:
             functions = yaml.safe_load(f)
         def read_function(func):
