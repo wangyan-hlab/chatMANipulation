@@ -1,5 +1,6 @@
 import openai
 import yaml
+import os
 
 class FRChatBot(object):
     """
@@ -16,6 +17,7 @@ class FRChatBot(object):
         self.messages = messages
         self.temperature = temperature  # this is the degree of the randomness of the response
         self.model = model
+        openai.api_key = os.getenv('OPENAI_API_KEY')
 
     def get_completion_from_messages(self, messages, temperature, model):
         response = openai.ChatCompletion.create(
