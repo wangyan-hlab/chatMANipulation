@@ -2,6 +2,7 @@
 # Written with the help of ChatGPT
 
 import tkinter as tk
+from tkinter import filedialog
 import datetime
 
 ## Setting up the ChatBot
@@ -17,7 +18,6 @@ messages = [
 ]
 # Defining a ChatBot and claiming the CONFIG_DIR
 frcb = FRChatBot(messages, temperature=0.1)
-config_dir = "../config/fr_robot/"
 
 ## Creating the GUI
 # 创建主窗口
@@ -62,6 +62,29 @@ frame.columnconfigure(1, weight=0)
 frame.columnconfigure(2, weight=1)
 frame.columnconfigure(3, weight=0)
 
+# 创建菜单栏
+menubar = tk.Menu(root)
+
+# 创建一个空菜单，用于添加文件选项
+filemenu = tk.Menu(menubar, tearoff=0)
+menubar.add_cascade(label="配置文件", menu=filemenu)
+
+# 定义打开文件方法
+def open_file():
+    filename = filedialog.askopenfilename(filetypes=[("yaml files", "*.yaml")])
+    if filename:
+        READFILE = True
+        print(f"选择的配置文件: {filename}")
+        # 在这里添加你的代码，使用选择的文件进行一些操作。
+        output = frcb.generate_function_list(filename)
+        text_input.insert("end", str(output))
+
+# 将 “打开” 选项添加到菜单中
+filemenu.add_command(label="打开", command=open_file)
+
+# 将单栏添加到主窗口中
+root.config(menu=menubar)
+
 # 添加时间戳到历史消息
 def add_timestamp(message):
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -72,8 +95,7 @@ def add_timestamp(message):
 def process_message():
     prompt= text_input.get("end-2l linestart", "end-1c")
     # print(prompt)
-    
-    if prompt:
+    if prompt:            
         text_input.delete("end-2l linestart", "end")
         add_timestamp(prompt)
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -81,9 +103,6 @@ def process_message():
         output_content = response
         text_output.insert("end", f"\n{now}\n{output_content}\n")
         text_output.see('end')
-        
-        
-        
 
 # 定义发送消息的函数
 def send_message(event):
