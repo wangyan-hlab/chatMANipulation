@@ -40,6 +40,7 @@ class FRChatBot(object):
                                                      model=self.model)
         print(f"FR:{response}")
         self.messages.append(self.build_message('assistant', response))
+        return response
 
     def generate_function_list(self, file):
         """
