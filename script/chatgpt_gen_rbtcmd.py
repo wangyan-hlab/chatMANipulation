@@ -2,7 +2,6 @@
 # Here is an example.
 #%% 
 # Importing libs
-import os
 from frchat.frchatbot import FRChatBot
 from dotenv import load_dotenv, find_dotenv
 _ = load_dotenv(find_dotenv("dev.env"))  # read local .env file
@@ -73,5 +72,4 @@ prompt = f"""
     关节点动从配置1运动到配置2,请帮我生成python指令,注意不要使用用户未提供的函数
 """
 frcb.chat(prompt)
-
 # %%

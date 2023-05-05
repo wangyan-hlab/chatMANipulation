@@ -33,12 +33,12 @@ class FRChatBot(object):
         return message
 
     def chat(self, prompt):
-        print("USER:", prompt)
+        print(f"USER:{prompt}\n==========\n")
         self.messages.append(self.build_message('user', prompt))
         response = self.get_completion_from_messages(messages=self.messages, 
                                                      temperature=self.temperature,
                                                      model=self.model)
-        print("FR:", response)
+        print(f"FR:{response}")
         self.messages.append(self.build_message('assistant', response))
 
     def generate_function_list(self, file):
