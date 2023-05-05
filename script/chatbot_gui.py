@@ -22,7 +22,7 @@ config_dir = "../config/fr_robot/"
 ## Creating the GUI
 # 创建主窗口
 root = tk.Tk()
-root.title("聊天室")
+root.title("Fairy小助手")
 
 # 创建输入框和输出框
 font=('Comic Sans MS', 12)
@@ -65,7 +65,7 @@ frame.columnconfigure(3, weight=0)
 # 添加时间戳到历史消息
 def add_timestamp(message):
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    text_input.insert("end", f"\n{now}:\n{message}\n")
+    text_input.insert("end", f"\n{now}\n{message}\n")
     text_input.see('end')
 
 # 处理用户输入并返回消息
@@ -79,7 +79,7 @@ def process_message():
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         response = frcb.chat(prompt)
         output_content = response
-        text_output.insert("end", f"\n{now}:\n{output_content}\n")
+        text_output.insert("end", f"\n{now}\n{output_content}\n")
         text_output.see('end')
         
         
