@@ -28,43 +28,59 @@ root.title("Fairy小助手")
 font=('Comic Sans MS', 12)
 frame = tk.Frame(root)
 frame.pack(side="top", fill="both", expand=True, padx=10, pady=10)
-
-label_input = tk.Label(frame, text="输入消息:", font=font)
+# 输入历史框
+label_input = tk.Label(frame, text="输入历史:", font=font)
 label_input.grid(row=0, column=0, sticky="w")
-
+scrollbar_input_history = tk.Scrollbar(frame)
+text_input_history = tk.Text(frame, height=5, 
+                             yscrollcommand=scrollbar_input_history.set,
+                             font=font)
+text_input_history.grid(row=1, column=0, sticky="nsew")
+scrollbar_input_history.config(command=text_input_history.yview)
+scrollbar_input_history.grid(row=1, column=1, sticky="ns")
+# 用户输入框
+label_input = tk.Label(frame, text="请输入:", font=font)
+label_input.grid(row=2, column=0, sticky="w")
 scrollbar_input = tk.Scrollbar(frame)
-
 text_input = tk.Text(frame, height=10, 
                      yscrollcommand=scrollbar_input.set,
                      font=font)
-text_input.grid(row=1, column=0, sticky="nsew")
-
-
+text_input.grid(row=3, column=0, sticky="nsew")
 scrollbar_input.config(command=text_input.yview)
-scrollbar_input.grid(row=1, column=1, sticky="ns")
-
-label_output = tk.Label(frame, text="输出消息:", font=font)
+scrollbar_input.grid(row=3, column=1, sticky="ns")
+# 输出框
+label_output = tk.Label(frame, text="小助手:", font=font)
 label_output.grid(row=0, column=2, sticky="w")
-
 scrollbar_output = tk.Scrollbar(frame)
-
-text_output = tk.Text(frame, height=10, 
+text_output = tk.Text(frame, height=15, 
                       yscrollcommand=scrollbar_output.set,
                       font=font)
 text_output.grid(row=1, column=2, sticky="nsew")
-
 scrollbar_output.config(command=text_output.yview)
 scrollbar_output.grid(row=1, column=3, sticky="ns")
 
+# 文本框适应窗口
 frame.rowconfigure(1, weight=1)
+frame.rowconfigure(3, weight=1)
 frame.columnconfigure(0, weight=1)
 frame.columnconfigure(1, weight=0)
 frame.columnconfigure(2, weight=1)
 frame.columnconfigure(3, weight=0)
+frame.rowconfigure(1, minsize=200)
+frame.rowconfigure(3, minsize=200)
+
+# 禁止输入历史框编辑
+text_input_history.config(state="disabled")
+# 禁止输出框编辑
+text_output.config(state="disabled")
+
+# 让下面的输入框在每次输入后自动滚动到底部
+def on_input_change(*_):
+    text_input.yview_moveto(1.0)
+text_input.bind("<KeyPress>", on_input_change)
 
 # 创建菜单栏
 menubar = tk.Menu(root)
-
 # 创建一个空菜单，用于添加文件选项
 filemenu = tk.Menu(menubar, tearoff=0)
 menubar.add_cascade(label="配置文件", menu=filemenu)
@@ -88,8 +104,10 @@ root.config(menu=menubar)
 # 添加时间戳到历史消息
 def add_timestamp(message):
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    text_input.insert("end", f"\n{now}\n{message}\n")
-    text_input.see('end')
+    text_input_history.configure(state="normal")
+    text_input_history.insert("end", f"\n{now}\n{message}\n")
+    text_input_history.configure(state="disabled")
+    text_input_history.see('end')
 
 # 处理用户输入并返回消息
 def process_message():
@@ -101,7 +119,9 @@ def process_message():
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         response = frcb.chat(prompt)
         output_content = response
+        text_output.configure(state="normal")
         text_output.insert("end", f"\n{now}\n{output_content}\n")
+        text_output.configure(state="disabled")
         text_output.see('end')
 
 # 定义发送消息的函数
@@ -110,14 +130,6 @@ def send_message(event):
 
 # 绑定回车键事件，发送消息
 root.bind("<Return>", send_message)
-
-
-# 让文本框自动适应窗口大小
-root.columnconfigure(0, weight=1)
-root.rowconfigure(1, weight=1)
-
-text_input.grid(sticky="nsew")
-text_output.grid(sticky="nsew")
 
 # 开始事件循环
 root.mainloop()
