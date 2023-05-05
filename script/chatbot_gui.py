@@ -65,7 +65,6 @@ frame.columnconfigure(3, weight=0)
 # 添加时间戳到历史消息
 def add_timestamp(message):
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    # message = text_input.get("end-2l linestart", "end-1c")
     text_input.insert("end", f"\n{now}:\n{message}\n")
     text_input.see('end')
 
@@ -73,14 +72,17 @@ def add_timestamp(message):
 def process_message():
     prompt= text_input.get("end-2l linestart", "end-1c")
     # print(prompt)
+    
     if prompt:
+        text_input.delete("end-2l linestart", "end")
+        add_timestamp(prompt)
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         response = frcb.chat(prompt)
         output_content = response
         text_output.insert("end", f"\n{now}:\n{output_content}\n")
         text_output.see('end')
-        text_input.delete("end-2l linestart", "end")
-        add_timestamp(prompt)
+        
+        
         
 
 # 定义发送消息的函数
