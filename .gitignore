@@ -1,5 +1,6 @@
+/test
 *.txt
 *.pdf
-/test
 **/__pycache__
 *.env
+*.sh
