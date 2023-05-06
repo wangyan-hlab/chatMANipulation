@@ -29,7 +29,7 @@ frcb = FRChatBot(messages, temperature=0.1)
 root = tk.Tk()
 root.title("Fairy小助手")
 root.geometry("1024x512")
-font=('Comic Sans MS', 12)
+font=('Times New Roman', 10)
 ## 创建输入历史框和用户输入框
 frame_left = tk.Frame(root)
 frame_left.pack(side="left", fill="both", expand=True, padx=10, pady=10)
@@ -109,7 +109,7 @@ root.config(menu=menubar)
 def save_input_history(message):
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     text_input_history.configure(state="normal")
-    text_input_history.insert("end", f"\n{now}\n{message}\n")
+    text_input_history.insert("end", f"\n====={now}=====\n{message}")
     text_input_history.configure(state="disabled")
     text_input_history.see('end')
 
@@ -130,7 +130,7 @@ def process_message():
         response = frcb.chat(prompt)
         output_content = response
         text_output.configure(state="normal")
-        text_output.insert("end", f"\n{now}\n{output_content}\n")
+        text_output.insert("end", f"\n-----{now}-----\n{output_content}\n")
         text_output.configure(state="disabled")
         text_output.see('end')
 
