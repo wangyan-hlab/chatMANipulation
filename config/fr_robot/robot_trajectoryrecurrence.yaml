@@ -18,7 +18,7 @@
       - name: do_choose
         type: int
         description: DO选择,bit0~bit7对应控制箱DO0~DO7，bit8~bit9对应末端DO0~DO1，0-不选择，1-选择
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：[errcode
 
 - function:
     name: SetTPDStart(type,name,period_ms,di_choose,do_choose)
@@ -39,7 +39,7 @@
       - name: do_choose
         type: int
         description: DO选择,bit0~bit7对应控制箱DO0~DO7，bit8~bit9对应末端DO0~DO1，0-不选择，1-选择
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetWebTPDStop()
@@ -48,7 +48,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetTPDDelete(name)
@@ -57,7 +57,7 @@
       - name: name
         type: str
         description: 轨迹名
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: LoadTPD(name)
@@ -66,7 +66,7 @@
       - name: name
         type: str
         description: 轨迹名
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: MoveTPD(name,blend,ovl)
@@ -81,4 +81,4 @@
       - name: ovl
         type: double
         description: 速度缩放因子，范围[0.0~100.0]
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode

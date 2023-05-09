@@ -6,7 +6,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0, company,device,softversion,bus],company:传感器厂商;失败：[errcode]
+    return: 成功：[0, company,device,softversion,bus],company:传感器厂商;失败：errcode
 
 - function:
     name: FT_SetConfig(company,device,softversion,bus)
@@ -24,7 +24,7 @@
       - name: bus
         type: int
         description: 设备挂载末端总线位置，暂不使用，默认为0
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: FT_Activate(state)
@@ -33,7 +33,7 @@
       - name: state
         type: int
         description: 0-复位，1-激活
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: FT_SetZero(state)
@@ -42,7 +42,7 @@
       - name: state
         type: int
         description: 0-去除零点，1-零点矫正
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: FT_SetRCS(ref)
@@ -51,7 +51,7 @@
       - name: ref
         type: int
         description: 0-工具坐标系，1-基坐标系
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: FT_PdIdenCompute()
@@ -60,7 +60,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0,weight] ,weight-负载重量，单位kg;失败：[errcode]
+    return: 成功：[0,weight] ,weight-负载重量，单位kg;失败：errcode
 
 - function:
     name: FT_PdIdenRecord(tool_id)
@@ -69,7 +69,7 @@
       - name: tool_id
         type: int
         description: 传感器坐标系编号，范围[0~14]
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: FT_PdCogIdenCompute ()
@@ -78,7 +78,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0,cog],cog=[cogx,cogy,cogz]，负载质心，单位mm;失败：[errcode]
+    return: 成功：[0,cogx,cogy,cogz]，负载质心，单位mm;失败：errcode
 
 - function:
     name: FT_PdCogIdenRecord(tool_id)
@@ -87,7 +87,7 @@
       - name: tool_id
         type: int
         description: 传感器坐标系编号，范围[0~14]
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: FT_GetForceTorqueRCS()
@@ -96,7 +96,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0,data] ,data=[fx,fy,fz,mx,my,mz];失败：[errcode]
+    return: 成功：[0,fx,fy,fz,mx,my,mz];失败：errcode
 
 - function:
     name: FT_GetForceTorqueOrigin()
@@ -105,7 +105,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0,data] ,data=[fx,fy,fz,mx,my,mz];失败：[errcode]
+    return: 成功：[0,fx,fy,fz,mx,my,mz];失败：errcode
 
 - function:
     name: FT_Guard(flag,sensor_num,select,force_torque,max_threshold,min_threshold)
@@ -129,7 +129,7 @@
       - name: min_threshold
         type: double
         description: 最小阈值, 力/力矩检测范围为(force_torque-min_threshold,force_torque+max_threshold)
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: FT_Control(flag,sensor_num,select,force_torque,gain,adj_sign,ILC_sign,max_dis,max_ang)
@@ -162,7 +162,7 @@
       - name: max_ang
         type: double
         description: 最大调整角度，单位°
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: FT_SpiralSearch(rcs,dr,fFinsih,t,vmax)
@@ -183,7 +183,7 @@
       - name: vmax
         type: double
         description: 线速度最大值，单位mm/s
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: FT_RotInsertion(rcs,angVelRot,forceInsertion,angleMax,orn,angAccmax,rotorn)
@@ -210,7 +210,7 @@
       - name: rotorn
         type: int
         description: 旋转方向，1-顺时针，2-逆时针
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: FT_LinInsertion(rcs,force_goal,lin_v,lin_a,disMax,linorn)
@@ -234,7 +234,7 @@
       - name: linorn
         type: int
         description: 插入方向，1-正方向，0-负方向
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: FT_CalCenterStart()
@@ -243,7 +243,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: FT_CalCenterEnd()
@@ -252,7 +252,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: FT_FindSurface (rcs,dir,axis,lin_v,lin_a,disMax,force_goal)
@@ -279,7 +279,7 @@
       - name: force_goal
         type: double
         description: 动作终止力阈值，单位N
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: FT_ComplianceStart(p,force)
@@ -291,7 +291,7 @@
       - name: force
         type: double
         description: 柔顺开启力阈值，单位N
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: FT_ComplianceStop()
@@ -300,4 +300,4 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode

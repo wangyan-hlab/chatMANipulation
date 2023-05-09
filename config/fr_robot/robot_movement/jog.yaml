@@ -21,7 +21,7 @@
       - name: max_dis
         type: double
         description: 单次点动最大角度/距离,单位°或mm
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: StopJOG(ref)
@@ -30,7 +30,7 @@
       - name: ref
         type: int
         description: 1-关节点动停止,3-基坐标系点动停止,5-工具坐标系点动停止,9-工件坐标系点动停止
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: ImmStopJOG()
@@ -39,4 +39,4 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode

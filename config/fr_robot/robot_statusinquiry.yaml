@@ -6,7 +6,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0,yangle,zangle],yangle-倾斜角，zangle-旋转角;失败：[errcode]
+    return: 成功：[0,yangle,zangle],yangle-倾斜角，zangle-旋转角;失败：errcode
 
 - function:
     name: GetSysVarValue(id)
@@ -15,7 +15,7 @@
       - name: id
         type: int
         description: 系统变量编号，范围[1~20]
-    return: 成功：[0,var_value],失败：[errcode]
+    return: 成功：[0,var_value],失败：errcode
 
 - function:
     name: GetActualJointPosDegree(flag)
@@ -24,7 +24,7 @@
       - name: flag
         type: int
         description: 0-阻塞，1-非阻塞
-    return: 成功：[0,joint_pos],joint_pos=[j1,j2,j3,j4,j5,j6];失败：[errcode]
+    return: 成功：[0,j1,j2,j3,j4,j5,j6];失败：errcode
 
 - function:
     name: GetActualJointPosRadian(flag)
@@ -33,7 +33,7 @@
       - name: flag
         type: int
         description: 0-阻塞，1-非阻塞
-    return: 成功：[0,joint_pos],joint_pos=[j1,j2,j3,j4,j5,j6];失败：[errcode]
+    return: 成功：[0,j1,j2,j3,j4,j5,j6];失败：errcode
 
 - function:
     name: GetActualTCPPose(flag)
@@ -42,7 +42,7 @@
       - name: flag
         type: int
         description: 0-阻塞，1-非阻塞
-    return: 成功：[0,tcp_pose],tcp_pose=[x,y,z,rx,ry,rz];失败：[errcode]
+    return: 成功：[0,x,y,z,rx,ry,rz];失败：errcode
 
 - function:
     name: GetActualTCPNum(flag)
@@ -51,7 +51,7 @@
       - name: flag
         type: int
         description: 0-阻塞，1-非阻塞
-    return: 成功：[0,tool_id],失败：[errcode]
+    return: 成功：[0,tool_id],失败：errcode
 
 - function:
     name: GetActualWObjNum(flag)
@@ -60,7 +60,7 @@
       - name: flag
         type: int
         description: 0-阻塞，1-非阻塞
-    return: 成功：[0,wobj_id],失败：[errcode]
+    return: 成功：[0,wobj_id],失败：errcode
 
 - function:
     name: GetActualToolFlangePose(flag)
@@ -69,7 +69,7 @@
       - name: flag
         type: int
         description: 0-阻塞，1-非阻塞
-    return: 成功：[0,flange_pose],flange_pose=[x,y,z,rx,ry,rz];失败：[errcode]
+    return: 成功：[0,x,y,z,rx,ry,rz];失败：errcode
 
 - function:
     name: GetInverseKin(type,desc_pos,config)
@@ -78,13 +78,13 @@
       - name: type
         type: int
         description: 0-绝对位姿(基坐标系)，1-相对位姿（基坐标系），2-相对位姿（工具坐标系）
-      - name: desc_pose
+      - name: desc_pos
         type: double
         description: 工具位姿，[x,y,z,rx,ry,rz]，单位[mm][°]
       - name: config
         type: int
         description: 关节配置，[-1]-参考当前关节位置求解，[0~7]-依据关节配置求解
-    return: 成功：[0,joint_pos],joint_pos=[j1,j2,j3,j4,j5,j6];失败：[errcode]
+    return: 成功：[0,j1,j2,j3,j4,j5,j6];失败：errcode
 
 - function:
     name: GetInverseKinRef(desc_pos,joint_pos_ref)
@@ -96,7 +96,7 @@
       - name: joint_pos_ref
         type: double
         description: 关节参考位置，[j1,j2,j3,j4,j5,j6]，单位[°]
-    return: 成功：[0,joint_pos],joint_pos=[j1,j2,j3,j4,j5,j6];失败：[errcode]
+    return: 成功：[0,j1,j2,j3,j4,j5,j6];失败：errcode
 
 - function:
     name: GetInverseKinHasSolution(desc_pos,joint_pos_ref)
@@ -108,7 +108,7 @@
       - name: joint_pos_ref
         type: double
         description: 关节参考位置，[j1,j2,j3,j4,j5,j6]，单位[°]
-    return: 成功：[0,result],“True”-有解，“False”-无解;失败：[errcode]
+    return: 成功：[0,result],“True”-有解，“False”-无解;失败：errcode
 
 - function:
     name: GetForwardKin(joint_pos)
@@ -117,7 +117,7 @@
       - name: joint_pos
         type: double
         description: 关节位置，[j1,j2,j3,j4,j5,j6]，单位[°]
-    return: 成功：[0,desc_pos],desc_pos=[x,y,z,rx,ry,rz]:工具位姿，单位[mm][°];失败：[errcode]
+    return: 成功：[0,x,y,z,rx,ry,rz]:工具位姿，单位[mm][°];失败：errcode
 
 - function:
     name: GetJointTorques(flag)
@@ -126,7 +126,7 @@
       - name: flag
         type: int
         description: 0-阻塞，1-非阻塞
-    return: 成功：[0,torques],torques=[j1,j2,j3,j4,j5,j6];失败：[errcode]
+    return: 成功：[0,jt1,jt2,jt3,jt4,jt5,jt6];失败：errcode
 
 - function:
     name: GetTargetPayload(flag)
@@ -135,7 +135,7 @@
       - name: flag
         type: int
         description: 0-阻塞，1-非阻塞
-    return: 成功：[0,weight],单位[kg];失败：[errcode]
+    return: 成功：[0,weight],单位[kg];失败：errcode
 
 - function:
     name: GetTargetPayloadCog(flag)
@@ -144,7 +144,7 @@
       - name: flag
         type: int
         description: 0-阻塞，1-非阻塞
-    return: 成功：[0,cog], cog=[x,y,z]:质心坐标，单位[mm];失败：[errcode]
+    return: 成功：[0,x,y,z]:质心坐标，单位[mm];失败：errcode
 
 - function:
     name: GetTCPOffset(flag)
@@ -153,7 +153,7 @@
       - name: flag
         type: int
         description: 0-阻塞，1-非阻塞
-    return: 成功：[0,tcp_offset], tcp_offset=[x,y,z,rx,ry,rz]:相对位姿，单位[mm][°];失败：[errcode]
+    return: 成功：[0,x,y,z,rx,ry,rz]:相对位姿，单位[mm][°];失败：errcode
 
 - function:
     name: GetWObjOffset(flag)
@@ -162,7 +162,7 @@
       - name: flag
         type: int
         description: 0-阻塞，1-非阻塞
-    return: 成功：[0,wobj_offset], wobj _offset=[x,y,z,rx,ry,rz]:相对位姿，单位[mm][°];失败：[errcode]
+    return: 成功：[0,x,y,z,rx,ry,rz]:相对位姿，单位[mm][°];失败：errcode
 
 - function:
     name: GetJointSoftLimitDeg(flag)
@@ -171,7 +171,7 @@
       - name: flag
         type: int
         description: 0-阻塞，1-非阻塞
-    return: 成功：[[0, j1min,j1max,j2min,j2max,j3min,j3max,j4min,j4max,j5min,j5max,j6min,j6max] :轴1~轴6关节负限位与正限位，单位[mm];失败：[errcode]
+    return: 成功：[0, j1min,j1max,j2min,j2max,j3min,j3max,j4min,j4max,j5min,j5max,j6min,j6max] :轴1~轴6关节负限位与正限位，单位[mm];失败：errcode
 
 - function:
     name: GetSystemClock()
@@ -180,7 +180,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0,t_ms]:单位[ms],失败：[errcode]
+    return: 成功：[0,t_ms]:单位[ms],失败：errcode
 
 - function:
     name: GetRobotCurJointsConfig()
@@ -189,7 +189,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0,config]:范围[0~7],失败：[errcode]
+    return: 成功：[0,config]:范围[0~7],失败：errcode
 
 - function:
     name: GetDefaultTransVel()
@@ -198,7 +198,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0,vel]:单位[mm/s],失败：[errcode]
+    return: 成功：[0,vel]:单位[mm/s],失败：errcode
 
 - function:
     name: GetRobotMotionDone()
@@ -207,4 +207,4 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0,state],state:0-未完成，1-完成;失败：[errcode]
+    return: 成功：[0,state],state:0-未完成，1-完成;失败：errcode

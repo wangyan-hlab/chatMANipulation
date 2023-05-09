@@ -6,7 +6,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0, company,device,softversion,bus],company:夹爪厂商;失败：[errcode]
+    return: 成功：[0, company,device,softversion,bus],company:夹爪厂商;失败：errcode
 
 - function:
     name: ActGripper(index,action)
@@ -18,7 +18,7 @@
       - name: action
         type: int
         description: 0-复位，1-激活
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: MoveGripper(index,pos,speed,force,maxtime,block)
@@ -42,7 +42,7 @@
       - name: block
         type: int
         description: 0-阻塞，1-非阻塞
-    return: 成功：[0],失败：[errcode]    
+    return: 成功：0,失败：errcode    
   
 - function:
     name: GetGripperMotionDone()
@@ -51,7 +51,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0,status], status:0-运动未完成，1-运动完成;失败：[errcode]
+    return: 成功：[0,status], status:0-运动未完成，1-运动完成;失败：errcode
 
 - function:
     name: SetGripperConfig(company,device,softversion,bus)
@@ -69,5 +69,4 @@
       - name: bus
         type: int
         description: 设备挂载末端总线位置，暂不使用，默认为0
-    return: 成功：[0],失败：[errcode]
-    
+    return: 成功：0,失败：errcode

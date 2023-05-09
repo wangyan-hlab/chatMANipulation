@@ -6,7 +6,7 @@
       - name: vel
         type: double
         description: 速度百分比，范围[0.0~100.0]
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
   
 - function:
     name: SetSysVarValue(id,value)
@@ -18,7 +18,7 @@
       - name: value
         type: double
         description: 变量值
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetToolCoord(id,t_coord,type,install)
@@ -36,7 +36,7 @@
       - name: install
         type: int
         description: 安装位置，0-机器人末端，1-机器人外部
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetToolList(id,t_coord ,type,install)
@@ -54,7 +54,7 @@
       - name: install
         type: int
         description: 安装位置，0-机器人末端，1-机器人外部
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetExToolCoord(id,etcp ,etool)
@@ -69,7 +69,7 @@
       - name: etool
         type: double
         description: 末端工具坐标系，单位[mm][°]，默认[0.0,0.0,0.0,0.0,0.0,0.0]
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetExToolList(id,etcp ,etool)
@@ -84,7 +84,7 @@
       - name: etool
         type: double
         description: 末端工具坐标系，单位[mm][°]，默认[0.0,0.0,0.0,0.0,0.0,0.0]
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetWObjCoord(id,w_coord)
@@ -96,7 +96,7 @@
       - name: w_coord
         type: double
         description: 坐标系相对位姿，单位[mm][°]，默认[0.0,0.0,0.0,0.0,0.0,0.0]
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetWObjList(id,w_coord)
@@ -108,7 +108,7 @@
       - name: w_coord
         type: double
         description: 坐标系相对位姿，单位[mm][°]，默认[0.0,0.0,0.0,0.0,0.0,0.0]
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetLoadWeight(weight)
@@ -117,7 +117,7 @@
       - name: weight
         type: double
         description: 单位[kg]
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetRobotInstallPos(method)
@@ -126,7 +126,7 @@
       - name: method
         type: int
         description: 0-平装，1-侧装，2-挂装
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetRobotInstallAngle(yangle,zangle)
@@ -138,7 +138,7 @@
       - name: zangle
         type: double
         description: 旋转角
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetLoadCoord(x,y,z)
@@ -153,7 +153,7 @@
       - name: z
         type: double
         description: 质心z坐标，单位[mm]
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: WaitMs(t_ms)
@@ -162,4 +162,4 @@
       - name: t_ms
         type: double
         description: 等待时间，单位[ms]
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode

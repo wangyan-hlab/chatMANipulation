@@ -36,7 +36,7 @@
       - name: offset_pos
         type: double
         description: 位姿偏移量，单位[mm][°],默认[0.0,0.0,0.0,0.0,0.0,0.0]
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
   
 - function:
     name: ServoJ(joint_pos,acc,vel,cmdT,filterT,gain)
@@ -60,4 +60,4 @@
       - name: gain
         type: double
         description: 目标位置的比例放大器，暂不开放，默认为0.0
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
