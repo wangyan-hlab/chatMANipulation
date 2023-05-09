@@ -28,16 +28,16 @@
         type: int
         description: 夹爪编号
       - name: pos
-        type: float
-        description: 位置百分比，范围[0~100]
+        type: double
+        description: 位置百分比，范围[0.0~100.0]
       - name: speed
-        type: float
-        description: 速度百分比，范围[0~100]
+        type: double
+        description: 速度百分比，范围[0.0~100.0]
       - name: force
-        type: float
-        description: 力矩百分比，范围[0~100]
+        type: double
+        description: 力矩百分比，范围[0.0~100.0]
       - name: maxtime
-        type: float
+        type: double
         description: 最大等待时间，范围[0~30000]，单位[ms]
       - name: block
         type: int

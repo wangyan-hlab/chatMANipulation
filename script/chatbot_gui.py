@@ -18,12 +18,12 @@ import datetime
 messages = [
     {'role':'system', 'content':'你是一个机器人用户助手,帮助用户控制一个6关节机器人运动, \
      你需要组合使用一些函数来完成特定任务,只使用用户提供的函数,不要自行引入其他第三方库(如RoboDK)'},
-    {'role':'user', 'content':'你好,请编写机器人控制指令,假设已实例化对象robot=frrpc.RPC(192.168.58.2), \
+    {'role':'user', 'content':'你好,请编写机器人控制指令,假设已实例化对象robot=frrpc.RPC("192.168.58.2"), \
      用户提供的函数均为对象的方法.请在每次输出程序时加上机器人实例化部分的指令'},
     {'role':'assistant', 'content':'好的，请告诉我能够使用哪些函数'},
 ]
 ## Instantiating a ChatBot
-frcb = FRChatBot(messages, temperature=0.1)
+frcb = FRChatBot(messages, temperature=0.1, history_num_to_del=2)
 
 # 交互界面
 ## 创建主窗口
