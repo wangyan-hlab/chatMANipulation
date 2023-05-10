@@ -6,7 +6,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: PointsOffsetEnable(flag,offset_pos)
@@ -18,7 +18,7 @@
       - name: offset_pos
         type: double
         description: 偏移量，单位[mm][°]，默认[0.0,0.0,0.0,0.0,0.0,0.0]
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
     
 - function:
     name: PointsOffsetDisable()
@@ -27,4 +27,4 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode

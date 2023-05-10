@@ -12,7 +12,7 @@
       - name: config
         type: int
         description: 0-不更新配置文件，1-更新配置文件
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetCollisionStrategy (strategy)
@@ -21,7 +21,7 @@
       - name: strategy
         type: int
         description: 0-报错暂停，1-继续运行
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetLimitPositive(p_limit)
@@ -30,7 +30,7 @@
       - name: p_limit=[j1,j2,j3,j4,j5,j6]
         type: list
         description: 六个关节位置
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetLimitNegative(n_limit)
@@ -39,7 +39,7 @@
       - name: n_limit=[j1,j2,j3,j4,j5,j6]
         type: list
         description: 六个关节位置
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: ResetAllError()
@@ -48,7 +48,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: FrictionCompensationOnOff(state)
@@ -57,7 +57,7 @@
       - name: state
         type: int
         description: 0-关，1-开
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetFrictionValue_level(coeff)
@@ -66,7 +66,7 @@
       - name: coeff=[j1,j2,j3,j4,j5,j6]
         type: list
         description: 六个关节补偿系数
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetFrictionValue_wall(coeff)
@@ -75,7 +75,7 @@
       - name: coeff=[j1,j2,j3,j4,j5,j6]
         type: list
         description: 六个关节补偿系数
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetFrictionValue_ceiling(coeff)
@@ -84,7 +84,7 @@
       - name: coeff=[j1,j2,j3,j4,j5,j6]
         type: list
         description: 六个关节补偿系数
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SetFrictionValue_freedom(coeff)
@@ -93,4 +93,4 @@
       - name: coeff=[j1,j2,j3,j4,j5,j6]
         type: list
         description: 六个关节补偿系数
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode

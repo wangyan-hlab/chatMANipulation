@@ -9,7 +9,7 @@
       - name: program_name
         type: str
         description: 作业程序名及路径，如“/fruser/movej.lua”，其中“/fruser/”为固定路径
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: ProgramLoad(program_name)
@@ -18,7 +18,7 @@
       - name: program_name
         type: str
         description: 作业程序名及路径，如“/fruser/movej.lua”，其中“/fruser/”为固定路径
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: GetCurrentLine()
@@ -27,7 +27,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0,line_num],失败：[errcode]
+    return: 成功：[0,line_num],失败：errcode
 
 - function:
     name: ProgramRun()
@@ -36,7 +36,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: ProgramPause()
@@ -45,7 +45,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: ProgramResume()
@@ -54,7 +54,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: ProgramStop()
@@ -63,7 +63,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: GetProgramState()
@@ -72,7 +72,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0,state],state:1-程序停止或无程序运行，2-程序运行中，3-程序暂停;失败：[errcode]
+    return: 成功：[0,state],state:1-程序停止或无程序运行，2-程序运行中，3-程序暂停;失败：errcode
 
 - function:
     name: GetLoadedProgram()
@@ -81,4 +81,4 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0,program_name],失败：[errcode]
+    return: 成功：[0,program_name],失败：errcode

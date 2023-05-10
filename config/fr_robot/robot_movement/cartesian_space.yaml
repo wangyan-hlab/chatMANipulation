@@ -39,7 +39,7 @@
       - name: offset_pos
         type: double
         description: 位姿偏移量，单位[mm][°],默认为[0.0,0.0,0.0,0.0,0.0,0.0]
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: MoveC(joint_pos_p,desc_pos_p,ptool,puser,pvel,pacc,exaxis_pos_p,poffset_flag,offset_pos_p,joint_pos_t,desc_pos_t,ttool,tuser,tvel,tacc,exaxis_pos_t ,toffset_flag,offset_pos_t,ovl,blendR)
@@ -105,7 +105,7 @@
       - name: blendR
         type: double
         description: 运动到位(阻塞)-[-1.0]，平滑半径(非阻塞)-[0~1000]，单位[mm]
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: Circle(joint_pos_p,desc_pos_p,ptool,puser,pvel,pacc,exaxis_pos_p,joint_pos_t,desc_pos_t,ttool,tuser,tvel,tacc,exaxis_pos_t,ovl,offset_flag,offset_pos)
@@ -162,7 +162,7 @@
       - name: offset_pos
         type: double
         description: 偏移量，单位[mm][°]，默认为[0.0,0.0,0.0,0.0,0.0,0.0]
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: NewSpiral(joint_pos,desc_pos,tool,user,vel,acc,exaxis_pos,ovl,offset_flag,offset_pos,param)
@@ -201,7 +201,7 @@
       - name: param
         type: list
         description: 列表[circle_num,circle_angle,rad_init,rad_add,rotaxis_add,rot_direction]，其中circle_num:螺旋圈数，circle_angle:螺旋倾角，rad_init:螺旋初始半径，rad_add:半径增量，rotaxis_add:转轴方向增量，rot_direction:旋转方向，0-顺时针，1-逆时针
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 - function:
     name: ServoCart(mode,desc_pos,pos_gain,acc,vel,cmdT,filterT,gain)
     description: 笛卡尔空间伺服模式运动
@@ -230,7 +230,7 @@
       - name: gain
         type: double
         description: 目标位置的比例放大器，暂不开放，默认为0.0
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: MoveCart(desc_pos,tool,user,vel,acc,ovl,blendT,config)
@@ -260,4 +260,4 @@
       - name: config
         type: int
         description: 关节配置，[-1]-参考当前关节位置求解，[0~7]-依据关节配置求解
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode

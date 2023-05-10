@@ -15,7 +15,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0,version],失败：[errcode]
+    return: 成功：[0,version],失败：errcode
 
 - function:
     name: GetControllerIP()
@@ -24,7 +24,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0,IP],失败：[errcode]
+    return: 成功：[0,IP],失败：errcode
 
 - function:
     name: Mode(state)
@@ -33,7 +33,7 @@
       - name: state
         type: int
         description: 1-手动模式，0-自动模式
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: DragTeachSwitch(state)
@@ -42,7 +42,7 @@
       - name: state
         type: int
         description: 1-进入拖动示教模式，0-退出拖动示教模式
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: IsInDragTeach()
@@ -51,7 +51,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0,state]，state:0-非拖动示教模式，1-拖动示教模式;失败：[errcode]
+    return: 成功：[0,state]，state:0-非拖动示教模式，1-拖动示教模式;失败：errcode
 
 - function:
     name: RobotEnable(state)
@@ -60,4 +60,4 @@
       - name: state
         type: int
         description: 1-上使能，0-下使能
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode

@@ -6,7 +6,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
   
 - function:
     name: SplinePTP(joint_pos,desc_pos,tool,user,vel,acc,ovl)
@@ -33,7 +33,7 @@
       - name: ovl
         type: double
         description: 速度缩放因子，[0.0~100.0]
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: SplineEnd()
@@ -42,7 +42,7 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: NewSplineStart(type)
@@ -51,7 +51,7 @@
       - name: type
         type: int
         description: 0-圆弧过渡，1-给定点位路径点
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
   
 - function:
     name: NewSplinePoint(joint_pos,desc_pos,tool,user,vel,acc,ovl,blendR,lastFlag)
@@ -84,7 +84,7 @@
       - name: lastFlag
         type: int
         description: 是否为最后一个点，0-否，1-是
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
 
 - function:
     name: NewSplineEnd()
@@ -93,4 +93,4 @@
       - name: n/a
         type: n/a
         description: n/a
-    return: 成功：[0],失败：[errcode]
+    return: 成功：0,失败：errcode
