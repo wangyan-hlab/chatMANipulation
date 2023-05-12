@@ -2,7 +2,6 @@ import openai
 import yaml
 import os
 
-
 class FRChatBot(object):
     """
         A ChatBot generating command to control FR Cobots
