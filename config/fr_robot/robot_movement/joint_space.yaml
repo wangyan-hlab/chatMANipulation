@@ -28,7 +28,7 @@
         type: double
         description: 外部轴1位置~外部轴4位置,单位mm,默认[0.0,0.0,0.0,0.0]
       - name: blendT
-        type: int
+        type: double
         description: 运动到位(阻塞)-[-1.0]，平滑时间(非阻塞)-[0~500]，单位[ms]
       - name: offset_flag
         type: int
