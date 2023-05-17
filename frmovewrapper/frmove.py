@@ -53,6 +53,7 @@ class FRCobot(object):
             raise ValueError("无效的关键字")
         if getjntpos_ret[0] != 0:
             print("GetJointPos 失败,错误码:", getjntpos_ret[0])
+            self.ResetAllError() # 尝试清除错误状态
             return
         else:
             print(f"GetJointPos 成功,关节位置({unit}):", getjntpos_ret[1:])
@@ -82,6 +83,7 @@ class FRCobot(object):
             raise ValueError("无效的关键字")
         if gettcppose_ret[0] != 0:
             print("GetTCPPose 失败,错误码:", gettcppose_ret[0])
+            self.ResetAllError() # 尝试清除错误状态
             return
         else:
             print(f"GetTCPPose 成功,{tool} TCP位姿:", gettcppose_ret[1:])
@@ -111,6 +113,7 @@ class FRCobot(object):
             raise ValueError("无效的关键字")
         if getframenum_ret[0] != 0:
             print("GetFrameNum 失败,错误码:", getframenum_ret[0])
+            self.ResetAllError() # 尝试清除错误状态
             return
         else:
             print(f"GetFrameNum 成功,{frame}坐标系编号:", getframenum_ret[1])
@@ -140,6 +143,7 @@ class FRCobot(object):
             raise ValueError("无效的关键字")
         if getframeoffset_ret[0] != 0:
             print("GetFrameOffset 失败,错误码:", getframeoffset_ret[0])
+            self.ResetAllError() # 尝试清除错误状态
             return
         else:
             print(f"GetFrameOffset 成功,{frame}坐标系相对位姿):", getframeoffset_ret[1:])
@@ -161,12 +165,14 @@ class FRCobot(object):
         gettgtpayload_ret = self.robot.GetTargetPayload(flag)
         if gettgtpayload_ret[0] != 0:
             print("GetPayloadWeight 失败,错误码:", gettgtpayload_ret[0])
+            self.ResetAllError() # 尝试清除错误状态
             return
         else:
             print("GetPayloadWeight 成功,负载质量(kg):", gettgtpayload_ret[1])
         gettgtpayloadcog_ret = self.robot.GetTargetPayloadCog(flag)
         if gettgtpayloadcog_ret[0] != 0:
             print("GetPayloadCOG 失败,错误码:", gettgtpayloadcog_ret[0])
+            self.ResetAllError() # 尝试清除错误状态
             return
         else:
             print("GetPayloadCOG 成功,负载质心坐标:", gettgtpayloadcog_ret[1:])
