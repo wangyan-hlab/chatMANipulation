@@ -52,7 +52,7 @@ class FRCobot(object):
         else:
             raise ValueError("无效的关键字")
         if getjntpos_ret[0] != 0:
-            print("GetJointPos 失败,错误码:", getjntpos_ret)
+            print("GetJointPos 失败,错误码:", getjntpos_ret[0])
             return
         else:
             print(f"GetJointPos 成功,关节位置({unit}):", getjntpos_ret[1:])
@@ -81,7 +81,7 @@ class FRCobot(object):
         else:
             raise ValueError("无效的关键字")
         if gettcppose_ret[0] != 0:
-            print("GetTCPPose 失败,错误码:", gettcppose_ret)
+            print("GetTCPPose 失败,错误码:", gettcppose_ret[0])
             return
         else:
             print(f"GetTCPPose 成功,{tool} TCP位姿:", gettcppose_ret[1:])
@@ -110,7 +110,7 @@ class FRCobot(object):
         else:
             raise ValueError("无效的关键字")
         if getframenum_ret[0] != 0:
-            print("GetFrameNum 失败,错误码:", getframenum_ret)
+            print("GetFrameNum 失败,错误码:", getframenum_ret[0])
             return
         else:
             print(f"GetFrameNum 成功,{frame}坐标系编号:", getframenum_ret[1])
@@ -139,7 +139,7 @@ class FRCobot(object):
         else:
             raise ValueError("无效的关键字")
         if getframeoffset_ret[0] != 0:
-            print("GetFrameOffset 失败,错误码:", getframeoffset_ret)
+            print("GetFrameOffset 失败,错误码:", getframeoffset_ret[0])
             return
         else:
             print(f"GetFrameOffset 成功,{frame}坐标系相对位姿):", getframeoffset_ret[1:])
@@ -160,13 +160,13 @@ class FRCobot(object):
 
         gettgtpayload_ret = self.robot.GetTargetPayload(flag)
         if gettgtpayload_ret[0] != 0:
-            print("GetPayloadWeight 失败,错误码:", gettgtpayload_ret)
+            print("GetPayloadWeight 失败,错误码:", gettgtpayload_ret[0])
             return
         else:
             print("GetPayloadWeight 成功,负载质量(kg):", gettgtpayload_ret[1])
         gettgtpayloadcog_ret = self.robot.GetTargetPayloadCog(flag)
         if gettgtpayloadcog_ret[0] != 0:
-            print("GetPayloadCOG 失败,错误码:", gettgtpayloadcog_ret)
+            print("GetPayloadCOG 失败,错误码:", gettgtpayloadcog_ret[0])
             return
         else:
             print("GetPayloadCOG 成功,负载质心坐标:", gettgtpayloadcog_ret[1:])
@@ -186,7 +186,7 @@ class FRCobot(object):
 
         getfk_ret = self.robot.GetForwardKin(joint_pos)
         if getfk_ret[0] != 0:
-            print("GetForwardKin 失败,错误码:", getfk_ret)
+            print("GetForwardKin 失败,错误码:", getfk_ret[0])
             self.ResetAllError() # 尝试清除错误状态
             return
         else:
@@ -221,13 +221,13 @@ class FRCobot(object):
                     print("GetInverseKinRef 成功,关节位置为:", target_joint_pos)
                     return target_joint_pos
                 else:
-                    print("GetInverseKinRef 失败,错误码:", getikref_ret)
+                    print("GetInverseKinRef 失败,错误码:", getikref_ret[0])
                     self.ResetAllError() # 尝试清除错误状态
                     return # GetInverseKinHasSolution()失败则直接结束
             else:
                 raise ValueError("逆运动学无解")
         else:
-            print("GetInverseKinHasSolution 失败,错误码:", ik_has_solution)
+            print("GetInverseKinHasSolution 失败,错误码:", ik_has_solution[0])
             self.ResetAllError() # 尝试清除错误状态
             return # GetInverseKinRef()失败则直接结束
 
@@ -414,8 +414,12 @@ class FRCobot(object):
                 print("MoveJ 运行成功")
             else:
                 print("MoveJ 运行未完成")
+                self.ResetAllError() # 尝试清除错误状态
+                return # MoveJ()未完成则直接结束
         else:
-            print("MoveJ 失败,错误码:", getrbtmotiondone_ret)
+            print("MoveJ 失败,错误码:", getrbtmotiondone_ret[0])
+            self.ResetAllError() # 尝试清除错误状态
+            return # MoveJ()失败则直接结束
     
 
     def MoveL(self, target_pos, target_flag="joint", 
@@ -481,5 +485,9 @@ class FRCobot(object):
                 print("MoveL 运行成功")
             else:
                 print("MoveL 运行未完成")
+                self.ResetAllError() # 尝试清除错误状态
+                return # MoveL()未完成则直接结束
         else:
-            print("MoveL 失败,错误码:", getrbtmotiondone_ret)
+            print("MoveL 失败,错误码:", getrbtmotiondone_ret[0])
+            self.ResetAllError() # 尝试清除错误状态
+            return # MoveL()失败则直接结束
