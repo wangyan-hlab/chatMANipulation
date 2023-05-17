@@ -4,6 +4,7 @@ import sys
 sys.path.append("../")
 from fr_python_sdk.frrpc import RPC
 
+
 class FRCobot(object):
     """
         FR Cobot Movement Control Wrapper
@@ -16,6 +17,7 @@ class FRCobot(object):
         
         self.robot = RPC(ip)
         
+
     def ResetAllError(self):
         """
         功能: 尝试清除错误状态,只能清除可复位的错误
@@ -26,6 +28,209 @@ class FRCobot(object):
             print("无法清除错误状态,错误不可复位,错误码:", resetallerror_ret)
         else:
             print("错误状态已清除,机器人成功复位")
+
+
+    def GetJointPos(self, flag=0, unit="deg"):
+        """
+        功能: 获取机器人关节位置(角度deg或弧度rad)
+
+        参数:
+            flag ('int'):
+                0: 阻塞
+                1: 非阻塞
+            unit ('str'):
+                "deg": 角度
+                "rad": 弧度
+        
+        返回: 关节位置[j1,j2,j3,j4,j5,j6], 单位: deg或rad
+        """
+
+        if unit == "deg":
+            getjntpos_ret = self.robot.GetActualJointPosDegree(flag)
+        elif unit == "rad":
+            getjntpos_ret = self.robot.GetActualJointPosRadian(flag)
+        else:
+            raise ValueError("无效的关键字")
+        if getjntpos_ret[0] != 0:
+            print("GetJointPos 失败,错误码:", getjntpos_ret)
+            return
+        else:
+            print(f"GetJointPos 成功,关节位置({unit}):", getjntpos_ret[1:])
+            return getjntpos_ret[1:]
+
+
+    def GetTCPPose(self, flag=0, tool="tool"):
+        """
+        功能: 获取机器人TCP位姿
+
+        参数:
+            flag ('int'):
+                0: 阻塞
+                1: 非阻塞
+            tool ('str'):
+                "tool": 获取工具TCP位姿
+                "flange": 获取末端法兰TCP位姿
+
+        返回: TCP位姿[x,y,z,rx,ry,rz], 单位: mm和deg
+        """
+
+        if tool == "tool":
+            gettcppose_ret = self.robot.GetActualTCPPose(flag)
+        elif tool == "flange":
+            gettcppose_ret = self.robot.GetActualToolFlangePose(flag)
+        else:
+            raise ValueError("无效的关键字")
+        if gettcppose_ret[0] != 0:
+            print("GetTCPPose 失败,错误码:", gettcppose_ret)
+            return
+        else:
+            print(f"GetTCPPose 成功,{tool} TCP位姿):", gettcppose_ret[1:])
+            return gettcppose_ret[1:]
+
+
+    def GetFrameNum(self, flag=0, frame="tcp"):
+        """
+        功能: 获取当前工具/工件坐标系编号
+
+        参数:
+            flag ('int'):
+                0: 阻塞
+                1: 非阻塞
+            frame ('str'):
+                "tcp": 工具坐标系
+                “wobj”: 工件坐标系
+        
+        返回: 工具坐标系编号 tool_id / 工件坐标系编号 wobj_id
+        """
+
+        if frame == "tcp":
+            getframenum_ret = self.robot.GetActualTCPNum(flag)
+        elif frame == "wobj":
+            getframenum_ret = self.robot.GetActualWObjNum(flag)
+        else:
+            raise ValueError("无效的关键字")
+        if getframenum_ret[0] != 0:
+            print("GetFrameNum 失败,错误码:", getframenum_ret)
+            return
+        else:
+            print(f"GetFrameNum 成功,{frame}坐标系编号):", getframenum_ret[1])
+            return getframenum_ret[1]
+
+
+    def GetFrameOffset(self, flag=0, frame="tcp"):
+        """
+        功能: 获取当前工具/工件坐标系
+
+        参数:
+            flag ('int'):
+                0: 阻塞
+                1: 非阻塞
+            frame ('str'):
+                "tcp": 工具坐标系
+                “wobj”: 工件坐标系
+        
+        返回: 工具/工件坐标系相对位姿[x,y,z,rx,ry,rz], 单位: mm和deg
+        """
+
+        if frame == "tcp":
+            getframeoffset_ret = self.robot.GetTCPOffset(flag)
+        elif frame == "wobj":
+            getframeoffset_ret = self.robot.GetWObjOffset(flag)
+        else:
+            raise ValueError("无效的关键字")
+        if getframeoffset_ret[0] != 0:
+            print("GetFrameOffset 失败,错误码:", getframeoffset_ret)
+            return
+        else:
+            print(f"GetFrameOffset 成功,{frame}坐标系相对位姿):", getframeoffset_ret[1:])
+            return getframeoffset_ret[1:]
+
+
+    def GetPayloadInfo(self, flag):
+        """
+        功能: 获取当前负载的质量和质心
+
+        参数:
+            flag ('int'):
+                0: 阻塞
+                1: 非阻塞
+        
+        返回: 负载质量weight, 单位: kg; 负载质心坐标[x,y,z], 单位: mm
+        """
+
+        gettgtpayload_ret = self.robot.GetTargetPayload(flag)
+        if gettgtpayload_ret[0] != 0:
+            print("GetPayloadWeight 失败,错误码:", gettgtpayload_ret)
+            return
+        else:
+            print("GetPayloadWeight 成功,负载质量(kg):", gettgtpayload_ret[1])
+        gettgtpayloadcog_ret = self.robot.GetTargetPayloadCog(flag)
+        if gettgtpayloadcog_ret[0] != 0:
+            print("GetPayloadCOG 失败,错误码:", gettgtpayloadcog_ret)
+            return
+        else:
+            print("GetPayloadCOG 成功,负载质心坐标:", gettgtpayloadcog_ret[1:])
+        return gettgtpayload_ret[1], gettgtpayloadcog_ret[1:]
+
+
+    def FK(self, joint_pos):
+        """
+        功能: 正运动学求解
+
+        参数:
+            joint_pos('list[float]'): 
+                关节位置[j1,j2,j3,j4,j5,j6], 单位: deg
+
+        返回: 工具TCP位姿[x,y,z,rx,ry,rz], 单位: mm和deg
+        """
+
+        getfk_ret = self.robot.GetForwardKin(joint_pos)
+        if getfk_ret[0] != 0:
+            print("GetForwardKin 失败,错误码:", getfk_ret)
+            self.ResetAllError() # 尝试清除错误状态
+            return
+        else:
+            print(f"GetForwardKin 成功,工具TCP位姿):", getfk_ret[1:])
+            return getfk_ret[1:]
+
+
+    def IK(self, flag, desc_pos, joint_pos_ref):
+        """
+        功能: 逆运动学求解
+
+        参数: 
+            flag ('int'):
+                0: 绝对位姿(基坐标系)
+                1: 相对位姿(基坐标系)
+                2: 相对位姿(工具坐标系)
+            desc_pos ('list[float]'):
+                工具位姿[x,y,z,rx,ry,rz], 单位: mm和deg
+            joint_pos_ref ('list[float]'):
+                关节参考位置[j1,j2,j3,j4,j5,j6], 单位: deg
+        
+        返回: 关节位置[j1,j2,j3,j4,j5,j6], 单位: deg
+        """
+
+        ik_has_solution = self.robot.GetInverseKinHasSolution(flag, desc_pos, joint_pos_ref)
+        if ik_has_solution[0] == 0:
+            if ik_has_solution[1]:
+                #TODO:这里需要纠错，文档中GetInverseKinRef()缺少第一个参数
+                getikref_ret = self.robot.GetInverseKinRef(flag, desc_pos, joint_pos_ref)
+                if getikref_ret[0] == 0:
+                    target_joint_pos = getikref_ret[1:]
+                    print("GetInverseKinRef 成功,关节位置为:", target_joint_pos)
+                    return target_joint_pos
+                else:
+                    print("GetInverseKinRef 失败,错误码:", getikref_ret)
+                    self.ResetAllError() # 尝试清除错误状态
+                    return # GetInverseKinHasSolution()失败则直接结束
+            else:
+                raise ValueError("逆运动学无解")
+        else:
+            print("GetInverseKinHasSolution 失败,错误码:", ik_has_solution)
+            self.ResetAllError() # 尝试清除错误状态
+            return # GetInverseKinRef()失败则直接结束
+
 
     def JointJog(self, joint_num, joint_angle, 
                  vel=50.0, acc=50.0, max_dis=5.0, stop_mode="stopjog"):
@@ -80,6 +285,7 @@ class FRCobot(object):
                     self.ResetAllError() # 尝试清除错误状态
                     return # ImmStopJOG()失败则直接结束
         print("JointJOG 运行成功")
+
 
     def CartJog(self, frame, dim, dis, 
                 vel=50.0, acc=50.0, max_dis=5.0, stop_mode="stopjog"):
@@ -147,6 +353,7 @@ class FRCobot(object):
                     return # ImmStopJOG()失败则直接结束
         print("CartJOG 运行成功")
 
+
     def MoveJ(self, target_pos, target_flag="joint", 
               vel=50.0, ovl=100.0, exaxis_pos=[0.0, 0.0, 0.0, 0.0], blendT=-1.0, 
               offset_flag=0, offset_pos=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]):
@@ -181,44 +388,16 @@ class FRCobot(object):
         ovl = float(ovl)
         blendT = float(blendT)
         acc = 0.0   # 加速度百分比，暂不开放，默认为0.0
-        tool = self.robot.GetActualTCPNum(0)[1]
-        user = self.robot.GetActualWObjNum(0)[1]
+        tool = self.GetFrameNum(frame="tcp")
+        user = self.GetFrameNum(frame="wobj")
         
         if target_flag == "joint":
             target_joint_pos = target_pos
-            getfk_ret = self.robot.GetForwardKin(target_joint_pos) # 计算目标位姿
-            if getfk_ret[0] == 0:
-                target_desc_pos = getfk_ret[1:]
-                print("正运动学求解成功,目标笛卡尔位姿为:", target_desc_pos)
-            else:
-                print("正运动学求解失败,错误码:", getfk_ret[0])
-                self.ResetAllError() # 尝试清除错误状态
-                return # GetForwardKin()失败则直接结束
+            target_desc_pos = self.FK(target_joint_pos)
         elif target_flag == "desc":
             target_desc_pos = target_pos
-            joint_pos_ref = self.robot.GetActualJointPosDegree(0)[1:]
-            #TODO:这里需要纠错，文档中GetInverseKinHasSolution()缺少第一个参数0
-            ik_has_solution = self.robot.GetInverseKinHasSolution(0, target_desc_pos, joint_pos_ref)
-            if ik_has_solution[0] == 0:
-                if ik_has_solution[1]:
-                    #TODO:这里需要纠错，文档中GetInverseKinRef()缺少第一个参数0
-                    getikref_ret = self.robot.GetInverseKinRef(0, target_desc_pos, joint_pos_ref)
-                    if getikref_ret[0] == 0:
-                        target_joint_pos = getikref_ret[1:]
-                        print("逆运动学求解成功,目标关节位置为:", target_joint_pos)
-                    else:
-                        print("逆运动学求解失败,错误码:", getikref_ret[0])
-                        self.ResetAllError() # 尝试清除错误状态
-                        return # GetInverseKinHasSolution()失败则直接结束
-                else:
-                    getikref_ret = self.robot.GetInverseKinRef(0, target_desc_pos, joint_pos_ref)
-                    print("逆运动学求解失败,错误码:", getikref_ret[0])
-                    self.ResetAllError() # 尝试清除错误状态
-                    return # GetInverseKinHasSolution()失败则直接结束
-            else:
-                print("逆运动学求解失败,错误码:", ik_has_solution[0])
-                self.ResetAllError() # 尝试清除错误状态
-                return # GetInverseKinRef()失败则直接结束
+            joint_pos_ref = self.GetJointPos()
+            target_joint_pos = self.IK(0, target_desc_pos, joint_pos_ref)
         else:
             raise ValueError("无效的关键字")
 
@@ -228,8 +407,17 @@ class FRCobot(object):
             print("MoveJ 失败,错误码:", movej_ret)
             self.ResetAllError() # 尝试清除错误状态
             return # MoveJ()失败则直接结束
-        print("MoveJ 运行成功")
+        
+        getrbtmotiondone_ret = self.robot.GetRobotMotionDone()
+        if getrbtmotiondone_ret[0] == 0:
+            if getrbtmotiondone_ret[1] == 1:
+                print("MoveJ 运行成功")
+            else:
+                print("MoveJ 运行未完成")
+        else:
+            print("MoveJ 失败,错误码:", getrbtmotiondone_ret)
     
+
     def MoveL(self, target_pos, target_flag="joint", 
               vel=50.0, ovl=100.0, exaxis_pos=[0.0, 0.0, 0.0, 0.0], blendR=-1.0, 
               search=0, offset_flag=0, offset_pos=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]):
@@ -267,49 +455,31 @@ class FRCobot(object):
         ovl = float(ovl)
         blendR = float(blendR)
         acc = 0.0   # 加速度百分比，暂不开放，默认为0.0
-        tool = self.robot.GetActualTCPNum(0)[1]
-        user = self.robot.GetActualWObjNum(0)[1]
+        tool = self.GetFrameNum(frame="tcp")
+        user = self.GetFrameNum(frame="wobj")
         
         if target_flag == "joint":
             target_joint_pos = target_pos
-            getfk_ret = self.robot.GetForwardKin(target_joint_pos) # 计算目标位姿
-            if getfk_ret[0] == 0:
-                target_desc_pos = getfk_ret[1:]
-                print("正运动学求解成功,目标笛卡尔位姿为:", target_desc_pos)
-            else:
-                print("正运动学求解失败,错误码:", getfk_ret[0])
-                self.ResetAllError() # 尝试清除错误状态
-                return # GetForwardKin()失败则直接结束
+            target_desc_pos = self.FK(target_joint_pos) # 计算目标位姿
         elif target_flag == "desc":
             target_desc_pos = target_pos
-            joint_pos_ref = self.robot.GetActualJointPosDegree(0)[1:]
-            ik_has_solution = self.robot.GetInverseKinHasSolution(0, target_desc_pos, joint_pos_ref)
-            if ik_has_solution[0] == 0:
-                if ik_has_solution[1]:
-                    getikref_ret = self.robot.GetInverseKinRef(0, target_desc_pos, joint_pos_ref)
-                    if getikref_ret[0] == 0:
-                        target_joint_pos = getikref_ret[1:]
-                        print("逆运动学求解成功,目标关节位置为:", target_joint_pos)
-                    else:
-                        print("逆运动学求解失败,错误码:", getikref_ret[0])
-                        self.ResetAllError() # 尝试清除错误状态
-                        return # GetInverseKinHasSolution()失败则直接结束
-                else:
-                    getikref_ret = self.robot.GetInverseKinRef(0, target_desc_pos, joint_pos_ref)
-                    print("逆运动学求解失败,错误码:", getikref_ret[0])
-                    self.ResetAllError() # 尝试清除错误状态
-                    return # GetInverseKinHasSolution()失败则直接结束
-            else:
-                print("逆运动学求解失败,错误码:", ik_has_solution[0])
-                self.ResetAllError() # 尝试清除错误状态
-                return # GetInverseKinRef()失败则直接结束
+            joint_pos_ref = self.GetJointPos()
+            target_joint_pos = self.IK(0, target_desc_pos, joint_pos_ref)
         else:
             raise ValueError("无效的关键字")
 
         movel_ret = self.robot.MoveL(target_joint_pos, target_desc_pos, tool, user, 
                          vel, acc, ovl, blendR, exaxis_pos, search, offset_flag, offset_pos)
         if movel_ret != 0:
-            print("MoveJ 失败,错误码:", movel_ret)
+            print("MoveL 失败,错误码:", movel_ret)
             self.ResetAllError() # 尝试清除错误状态
             return # MoveL()失败则直接结束
-        print("MoveL 运行成功")
+        
+        getrbtmotiondone_ret = self.robot.GetRobotMotionDone()
+        if getrbtmotiondone_ret[0] == 0:
+            if getrbtmotiondone_ret[1] == 1:
+                print("MoveJ 运行成功")
+            else:
+                print("MoveJ 运行未完成")
+        else:
+            print("MoveJ 失败,错误码:", getrbtmotiondone_ret)
