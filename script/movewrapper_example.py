@@ -38,7 +38,7 @@ rbt.GetTCPPose()
 # %%
 # CartJog() test 2 pass
 rbt.GetTCPPose()
-print("当前工具坐标系编号:", rbt.GetFrameNum())
+rbt.GetFrameNum()
 rbt.CartJog(frame="tool", dim=3, dis=20, vel=100.0, max_dis=10)
 rbt.GetTCPPose()
 
@@ -57,7 +57,7 @@ start_jnt_pos = rbt.GetJointPos()
 # MoveJ() test 2 pass
 start_tcp_pos = rbt.GetTCPPose()
 print(start_tcp_pos)
-delta_tcp_pos = np.array([10,0,0,0,0,0])
+delta_tcp_pos = np.array([-120,0,0,0,0,0])
 target_tcp_pos = list(np.asarray(start_tcp_pos) + delta_tcp_pos)
 for i in range(6):
     target_tcp_pos[i] = float(target_tcp_pos[i])  # 需要使用built-in float
@@ -79,7 +79,7 @@ rbt.GetJointPos()
 # %%
 # MoveL() test 2
 start_tcp_pos = rbt.GetTCPPose()
-delta_tcp_pos = np.array([-10,0,0,0,0,0])
+delta_tcp_pos = np.array([-50,60,0,0,0,0])
 target_tcp_pos = list(np.asarray(start_tcp_pos) + delta_tcp_pos)
 for i in range(6):
     target_tcp_pos[i] = float(target_tcp_pos[i])  # 需要使用built-in float

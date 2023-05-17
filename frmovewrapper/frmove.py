@@ -84,7 +84,7 @@ class FRCobot(object):
             print("GetTCPPose 失败,错误码:", gettcppose_ret)
             return
         else:
-            print(f"GetTCPPose 成功,{tool} TCP位姿):", gettcppose_ret[1:])
+            print(f"GetTCPPose 成功,{tool} TCP位姿:", gettcppose_ret[1:])
             return gettcppose_ret[1:]
 
 
@@ -113,7 +113,7 @@ class FRCobot(object):
             print("GetFrameNum 失败,错误码:", getframenum_ret)
             return
         else:
-            print(f"GetFrameNum 成功,{frame}坐标系编号):", getframenum_ret[1])
+            print(f"GetFrameNum 成功,{frame}坐标系编号:", getframenum_ret[1])
             return getframenum_ret[1]
 
 
@@ -478,8 +478,8 @@ class FRCobot(object):
         getrbtmotiondone_ret = self.robot.GetRobotMotionDone()
         if getrbtmotiondone_ret[0] == 0:
             if getrbtmotiondone_ret[1] == 1:
-                print("MoveJ 运行成功")
+                print("MoveL 运行成功")
             else:
-                print("MoveJ 运行未完成")
+                print("MoveL 运行未完成")
         else:
-            print("MoveJ 失败,错误码:", getrbtmotiondone_ret)
+            print("MoveL 失败,错误码:", getrbtmotiondone_ret)
