@@ -1,9 +1,6 @@
 import time
 import numpy as np
-import sys
-sys.path.append("../")
 from fr_python_sdk.frrpc import RPC
-
 
 class FRCobot(object):
     """

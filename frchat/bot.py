@@ -36,24 +36,26 @@ class FRChatBot(object):
         return message
 
     def chat(self, prompt):
-        print(f"USER:{prompt}\n==========\n")
+        print(f"USER:{prompt}\n----------\n")
    
         self.messages.append(self.build_message('user', prompt))
         response = self.get_completion_from_messages(messages=self.messages, 
                                                      temperature=self.temperature,
                                                      model=self.model)
-        print(f"FR:{response}")
+        print(f"FR:{response}\n==========\n")
         self.messages.append(self.build_message('assistant', response))          
         if self.message_history_index==self.history_num_to_del:
-            del self.messages[0]
-            del self.messages[1]
+            for i in range(self.history_num_to_del):
+                del self.messages[i]
+            if self.history_num_to_del != 0:
+                print(f"[INFO] The first {self.history_num_to_del} message(s) deleted")
         else:
             self.message_history_index=self.message_history_index+1
         return response
 
-    def generate_function_list(self, file):
+    def read_config(self, file):
         """
-            Reading function infos from a YAML file
+            Reading functions from a YAML file
         """
         with open(file, "rb") as f:
             functions = yaml.safe_load(f)
@@ -66,3 +68,4 @@ class FRChatBot(object):
             return [f"{func_name}", f"功能:'{desc}'", f"参数:'{arg_desc}'", f"返回值:'{ret}'"]
         output = [read_function(func['function']) for func in functions]
         return output
+    
