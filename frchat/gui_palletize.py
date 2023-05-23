@@ -1,5 +1,6 @@
 from frchat.gui import *
-from frchat.init_prompt_palletize import MSG_PALLETIZE_INTRO
+from frchat.bot_palletize import FRChatBotPalletize
+from frchat.init_prompt_palletize import *
 
 class FRChatGUIPalletize(FRChatGUI):
     """
@@ -9,8 +10,9 @@ class FRChatGUIPalletize(FRChatGUI):
         Data: 2023/05/23
     """
     
-    def __init__(self, bot, title, width=1024, height=512, font=('Times New Roman', 10)) -> None:
-        super().__init__(bot, title, width, height, font)
+    def __init__(self, title, width=1024, height=512, font=('Times New Roman', 10)) -> None:
+        super().__init__(title, width, height, font)
+        self.bot = FRChatBotPalletize(messages=MSG_PALLETIZE_INTRO,temperature=0.1)
         self.yaml_name = None
         self.palletize_params = None
         self.palletize_program_name = None
@@ -21,10 +23,11 @@ class FRChatGUIPalletize(FRChatGUI):
         response = self.output_content
         yaml_name_pattern = re.compile(r"param_([\s\S]*?)\.yaml")
         self.yaml_name = yaml_name_pattern.findall(response)
+        print(f">>> yaml_name = {self.yaml_name}")
         yaml_content_pattern = re.compile(r"```yaml\n([\s\S]*?)\n```")
         self.palletize_params = yaml_content_pattern.findall(response)
         # 创建yaml文件
-        if self.yaml_name and (self.yaml_name != "xxx"):
+        if self.yaml_name and (self.yaml_name[-1] != "xxx"):
             dir = 'config/palletize/'
             if not os.path.exists(dir):
                 os.mkdir(dir)
@@ -34,14 +37,11 @@ class FRChatGUIPalletize(FRChatGUI):
                 with open(yaml_filepath, 'w', encoding='utf-8') as f:
                     for match in self.palletize_params:
                         f.write(f"{match}\n")
-                self.bot.messages = MSG_PALLETIZE_INTRO #TODO:创建还原点不成功
-                print("[INFO] 参数设置完成,利用创建的还原点减少context length")
-                print(">>>>><<<<<<<", len(self.bot.messages), self.bot.messages)
 
         palletize_program_name_pattern = re.compile(r"palletize_([\s\S]*?)\.py")
         self.palletize_program_name = palletize_program_name_pattern.findall(response)
         # 保存码垛python程序
-        if self.palletize_program_name and (self.palletize_program_name != "xxx"):
+        if self.palletize_program_name and (self.palletize_program_name[-1] != "xxx"):
             palletize_program_content = self.bot.gen_program('placeholder')
             print(">>>>>> py_content:", palletize_program_content)
             dir = 'palletize_program/'
@@ -51,5 +51,3 @@ class FRChatGUIPalletize(FRChatGUI):
             with open(py_filepath, 'w', encoding='utf-8') as f:
                 for match in palletize_program_content:
                     f.write(f"{match}\n")
-
-

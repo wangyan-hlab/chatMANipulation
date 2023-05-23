@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import filedialog
 import datetime
 from frchat.bot import FRChatBot
+from frchat.init_prompt_rbtcmd import MSG_RBTCMD_INTRO
 from dotenv import load_dotenv, find_dotenv
 _ = load_dotenv(find_dotenv("dev.env"))  # read local .env file
 
@@ -16,8 +17,8 @@ class FRChatGUI(object):
         Date: 2023/05/23
     """
 
-    def __init__(self, bot, title, width=1024, height=512, font=('Times New Roman', 10)) -> None:
-        self.bot = bot
+    def __init__(self, title, width=1024, height=512, font=('Times New Roman', 10)) -> None:
+        self.bot = FRChatBot(MSG_RBTCMD_INTRO, temperature=0.1, history_num_to_del=3)
         self.title = title
         self.width = width
         self.height = height
@@ -124,11 +125,10 @@ class FRChatGUI(object):
 
     def start_gui(self):
         self.text_input_history, self.text_input, self.text_output = self.create_gui()
-        # self.input_content, self.output_content = self.process_message()
         self.root.bind("<Control-Key-s>", self.send_message)
         ## 开始事件循环
         self.root.mainloop()
-        
+    
     def send_message(self, event):
         self.process_message()
 
@@ -192,17 +192,3 @@ class FRChatGUI(object):
                             f.write(f"{match}\n")
             else:
                 print("[INFO] 未连接机器人,只保存程序文件,不进行纠错")
-
-
-if __name__ == "__main__":
-
-    from init_prompt_rbtcmd import MSG_RBTCMD_INTRO
-
-    # 设置ChatBot
-    messages = MSG_RBTCMD_INTRO
-    frcb = FRChatBot(messages, temperature=0.1, history_num_to_del=2)
-    # GUI
-    frgui = FRChatGUI(frcb, title="Fairy小助手")
-    frgui.start_gui()
-    
-
