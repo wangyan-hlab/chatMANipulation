@@ -12,9 +12,7 @@ pallet_params = '1.工件配置: \n \
 - 前边长度(float,单位:mm) \n \
 - 侧边长度(float,单位:mm) \n \
 - 高度(float,单位:mm) \n \
-- 工位选择(str,左--left / 右--right / 两边--both) \n \
-- 左工位过渡点(list[x,y,z,rx,ry,rz],单位:mm和deg,如不存在设置为null) \n \
-- 右工位过渡点(list[x,y,z,rx,ry,rz],单位:mm和deg,如不存在设置为null) \n \
+- 工位过渡点(list[x,y,z,rx,ry,rz],单位:mm和deg,如不存在设置为null) \n \
 3.模式配置: \n \
 - 工件间隔(float,单位:mm) \n \
 - 每层行数(int) \n \
@@ -23,7 +21,8 @@ pallet_params = '1.工件配置: \n \
 4.机器人移动配置: \n \
 - 作业原点(list(float)[x,y,z,rx,ry,rz],单位:mm和deg,通过点位示教得到) \n \
 - 路径点1(list(float)[x,y,z,rx,ry,rz],单位:mm和deg,通过点位示教得到) \n \
-- 移动方向(str,沿托盘侧边--as / 沿托盘前边--af) \n \
+- 起始方位(list(int),[0,0] / [0,1] / [1,0] / [1,1],代表第一个工件的位置) \n \
+- 移动方向(str,沿托盘侧边--X / 沿托盘前边--Y) \n \
 - 机械臂运动方式(str,点到点--ptp / 直线--line) \n \
 - 机械臂运动路径(str,头到尾--headtail / 弓字形--zigzag) \n \
 - 堆叠方式(str,堆垛--load / 卸垛--unload)'
