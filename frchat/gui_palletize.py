@@ -1,6 +1,7 @@
+import copy
 from frchat.gui import *
 from frchat.bot_palletize import FRChatBotPalletize
-from frchat.init_prompt_palletize import *
+from frchat.init_prompt_palletize import MSG_PALLETIZE_INTRO
 
 class FRChatGUIPalletize(FRChatGUI):
     """
@@ -16,6 +17,7 @@ class FRChatGUIPalletize(FRChatGUI):
         self.yaml_name = None
         self.palletize_params = None
         self.palletize_program_name = None
+        self.init_prompt =  copy.deepcopy(MSG_PALLETIZE_INTRO)
 
     def match_pattern(self, robot_connect=False):
         
@@ -23,7 +25,6 @@ class FRChatGUIPalletize(FRChatGUI):
         response = self.output_content
         yaml_name_pattern = re.compile(r"param_([\s\S]*?)\.yaml")
         self.yaml_name = yaml_name_pattern.findall(response)
-        print(f">>> yaml_name = {self.yaml_name}")
         yaml_content_pattern = re.compile(r"```yaml\n([\s\S]*?)\n```")
         self.palletize_params = yaml_content_pattern.findall(response)
         # 创建yaml文件
@@ -37,6 +38,10 @@ class FRChatGUIPalletize(FRChatGUI):
                 with open(yaml_filepath, 'w', encoding='utf-8') as f:
                     for match in self.palletize_params:
                         f.write(f"{match}\n")
+                # 为了防止token超限，使用initial prompt重新初始化
+                self.bot.messages.clear()
+                self.bot.messages = self.init_prompt
+                print("[Reinit] bot_messages", self.bot.messages)
 
         palletize_program_name_pattern = re.compile(r"palletize_([\s\S]*?)\.py")
         self.palletize_program_name = palletize_program_name_pattern.findall(response)
