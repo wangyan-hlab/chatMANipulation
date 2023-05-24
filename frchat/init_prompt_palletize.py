@@ -21,7 +21,9 @@ pallet_params = '1.工件配置: \n \
 - 每层列数(int) \n \
 - 码垛层数(int) \n \
 4.机器人移动配置: \n \
-- 升降柱(boolean,有--True / 无--False) \n \
+- 作业原点(list(float)[x,y,z,rx,ry,rz],单位:mm和deg,通过点位示教得到) \n \
+- 路径点1(list(float)[x,y,z,rx,ry,rz],单位:mm和deg,通过点位示教得到) \n \
+- 移动方向(str,沿托盘侧边--as / 沿托盘前边--af) \n \
 - 机械臂运动方式(str,点到点--ptp / 直线--line) \n \
 - 机械臂运动路径(str,头到尾--headtail / 弓字形--zigzag) \n \
 - 堆叠方式(str,堆垛--load / 卸垛--unload)'
