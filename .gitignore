@@ -7,3 +7,5 @@
 **/__pycache__
 *.env
 *.sh
+/script/config/palletize/param_*
+/script/palletize_program/palletize_*

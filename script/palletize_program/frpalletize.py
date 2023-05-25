@@ -20,7 +20,15 @@ class FRPalletize(object):
 
     def get_target_point(self, box_point, p_pallet_origin, suction_point):
         """
-            获得机器人坐标系下的目标吸取点
+            获得机器人坐标系下的机器人运动目标点
+
+            参数:
+                box_point: 托盘坐标系下工件的位置[x, y, z]
+                p_pallet_origin: 机器人坐标系下,示教得到的托盘坐标系原点坐标
+                suction_point: 机器人坐标系下,示教得到的吸盘在工件上的吸附位置,通常和工件几何中心重合
+
+            返回:
+                target_point: 机器人坐标系下,机器人的运动目标点
         """
         [x, y, z] = box_point
         tran_pallet_to_robot = euler_to_homomat(p_pallet_origin)  # 原点和第一个箱子几何中心重合
@@ -33,7 +41,9 @@ class FRPalletize(object):
 
 
     def robot_motion(self, robot, point, motion_type):
-
+        """
+            机器人的两种运动方式: 1.点到点(MoveJ) 2.直线(MoveL)
+        """
         if motion_type == 'ptp':
             robot.MoveJ(point, target_flag='desc')
         elif motion_type == 'line':
@@ -43,7 +53,9 @@ class FRPalletize(object):
 
 
     def execute_palletize(self):
-
+        """
+            执行码垛任务
+        """
         # 工件参数
         box_length = self.params['工件配置']['长度']
         box_width = self.params['工件配置']['宽度']
@@ -64,7 +76,7 @@ class FRPalletize(object):
 
         # 机械臂移动参数
         p_home = self.params['机器人移动配置']['作业原点']
-        p_path_1 = self.params['机器人移动配置']['路径点1']
+        p_pallet_origin = self.params['机器人移动配置']['托盘原点']
         first_corner = self.params['机器人移动配置']['起始方位']
         move_direction = self.params['机器人移动配置']['移动方向']
         motion = self.params['机器人移动配置']['运动方式']
@@ -242,7 +254,7 @@ class FRPalletize(object):
                 raise ValueError("无效的起始方位,必须是[0,0]/[0,1]/[1,0]/[1,1]")
         
         # 计算机器人坐标系下的目标点坐标
-        target_points = [self.get_target_point(box_point, p_pallet_origin=p_path_1, suction_point=suction_point) 
+        target_points = [self.get_target_point(box_point, p_pallet_origin=p_pallet_origin, suction_point=suction_point) 
                             for box_point in box_points]
         
         for target_point in target_points:

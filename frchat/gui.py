@@ -125,12 +125,9 @@ class FRChatGUI(object):
 
     def start_gui(self):
         self.text_input_history, self.text_input, self.text_output = self.create_gui()
-        self.root.bind("<Control-Key-s>", self.send_message)
+        self.root.bind("<Control-Key-s>", self.process_message)
         ## 开始事件循环
         self.root.mainloop()
-    
-    def send_message(self, event):
-        self.process_message()
 
     def save_input_history(self, message):
         """
@@ -142,7 +139,7 @@ class FRChatGUI(object):
         self.text_input_history.configure(state="disabled")
         self.text_input_history.see('end')
 
-    def process_message(self):
+    def process_message(self, *args):
         """
             处理用户输入并返回消息
         """
