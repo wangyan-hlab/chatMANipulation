@@ -17,6 +17,7 @@ class FRChatGUIPalletize(FRChatGUI):
         self.yaml_name = None
         self.palletize_params = None
         self.palletize_program_name = None
+        self.palletize_program_content = None
         self.init_prompt =  copy.deepcopy(MSG_PALLETIZE_INTRO)
 
     def match_pattern(self, robot_connect=False):
@@ -38,6 +39,7 @@ class FRChatGUIPalletize(FRChatGUI):
                 with open(yaml_filepath, 'w', encoding='utf-8') as f:
                     for match in self.palletize_params:
                         f.write(f"{match}\n")
+                        print("[INFO] yaml文件已输出!")
                 # 为了防止token超限，使用initial prompt重新初始化
                 self.bot.messages.clear()
                 self.bot.messages = self.init_prompt
@@ -45,14 +47,17 @@ class FRChatGUIPalletize(FRChatGUI):
 
         palletize_program_name_pattern = re.compile(r"palletize_([\s\S]*?)\.py")
         self.palletize_program_name = palletize_program_name_pattern.findall(response)
+        palletize_program_content_pattern = re.compile(r"```python\n([\s\S]*?)\n```")
+        self.palletize_program_content = palletize_program_content_pattern.findall(response)
         # 保存码垛python程序
         if self.palletize_program_name and (self.palletize_program_name[-1] != "xxx"):
-            palletize_program_content = self.bot.gen_program('placeholder')
-            print(">>>>>> py_content:", palletize_program_content)
             dir = 'palletize_program/'
             if not os.path.exists(dir):
                 os.mkdir(dir)
             py_filepath = os.path.join(dir, f'palletize_{self.palletize_program_name[-1]}.py')
-            with open(py_filepath, 'w', encoding='utf-8') as f:
-                for match in palletize_program_content:
-                    f.write(f"{match}\n")
+            if self.palletize_program_content:
+                with open(py_filepath, 'w', encoding='utf-8') as f:
+                    for match in self.palletize_program_content:
+                        f.write(f"{match}\n")
+                        print("[INFO] python程序已输出!")
+                        

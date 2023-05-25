@@ -21,12 +21,4 @@ class FRChatBotPalletize(FRChatBot):
             params = yaml.safe_load(f)
         
         return params
-    
-    def gen_program(self, yaml_content):
-        """
-            Generating a palletization program with given params in YAML file
-        """
-        # TODO:
-        test = 'hello'
-        return test
         

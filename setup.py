@@ -12,6 +12,7 @@ setup(
         'frchat.bot_palletize',
         'frchat.init_prompt_palletize',
         'frchat.init_prompt_rbtcmd',
-        'frmovewrapper.frmove'
+        'frmovewrapper.frmove',
+        'frmovewrapper.robotmath'
     ]
 )

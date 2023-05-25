@@ -2,7 +2,7 @@
 /.idea
 /*.egg-info
 */test*
-*.txt
+*record_*.txt
 *.pdf
 **/__pycache__
 *.env
