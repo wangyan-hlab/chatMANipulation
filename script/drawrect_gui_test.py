@@ -1,8 +1,8 @@
 import tkinter as tk
 
-def update_scale_factor(value):
+def update_scale_factor(*args):
     global SCALE_FACTOR
-    SCALE_FACTOR = int(value)
+    SCALE_FACTOR = int(*args)
     draw_rectangle()
 
 def draw_rectangle():
@@ -29,6 +29,7 @@ def draw_rectangle():
     scaled_spacing = spacing * SCALE_FACTOR
 
     canvas.delete("rectangle")
+    canvas.delete("arrow")
 
     for row in range(rows):
         for col in range(cols):
@@ -37,6 +38,11 @@ def draw_rectangle():
             x2 = x1 + scaled_length
             y2 = y1 + scaled_width
             canvas.create_rectangle(x1, y1, x2, y2, fill="cyan", tags="rectangle")
+    
+    # 绘制带箭头的直线
+    x1, y1 = 10+scaled_length/2, 10+scaled_width/2  # 起点坐标
+    x2, y2 = 10+scaled_length/2, 10+scaled_width/2+50  # 终点坐标
+    canvas.create_line(x1, y1, x2, y2, arrow="last",tags="arrow")
 
 root = tk.Tk()
 root.title("矩形绘制程序")

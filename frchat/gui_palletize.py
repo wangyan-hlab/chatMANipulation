@@ -22,14 +22,18 @@ class FRChatGUIPalletize(FRChatGUI):
         self.python_name = None
         self.python_content = None
         # 图形绘制相关
-        self.box_length = None
-        self.box_width = None
-        self.pallet_length = None
-        self.pallet_width = None
-        self.box_interval = None
-        self.nrow = None
-        self.ncol = None
+        self.box_length = 10.0
+        self.box_width = 8.0
+        self.pallet_length = 22.0
+        self.pallet_width = 18.0
+        self.box_interval = 2.0
+        self.nrow = 2
+        self.ncol = 2
+        self.first_corner = [0, 0]
+        self.move_direction = None
         self.canvas = None
+        self.frame_canvas = None
+        self.scale_factor = 5
 
 
     def create_gui(self):
@@ -69,25 +73,54 @@ class FRChatGUIPalletize(FRChatGUI):
         text_input.grid(row=3, column=0, sticky="nsew")
         scrollbar_input.config(command=text_input.yview)
         scrollbar_input.grid(row=3, column=1, sticky="ns")
-        ## 创建输出框
+        ## 创建画布和输出框
         frame_right = tk.Frame(root)
-        frame_right.pack(side="right", fill="both", expand=True, padx=10, pady=10)
+        frame_right.pack(side="left", fill="both", expand=True, padx=10, pady=10)
+        ### 创建画布
+        label_draw = tk.Label(frame_right, text="预览图", font=font)
+        label_draw.grid(row=0, column=0, sticky="w")
+        ### y scrollbar
+        scrollbar_draw_y = tk.Scrollbar(frame_right, orient="vertical")
+        ### x scrollbar
+        scrollbar_draw_x = tk.Scrollbar(frame_right, orient="horizontal")
+        self.canvas = tk.Canvas(frame_right, 
+                                width=10, 
+                                height=5, 
+                                bg="white", 
+                                xscrollcommand=scrollbar_draw_x.set,
+                                yscrollcommand=scrollbar_draw_y.set)
+        self.canvas.grid(row=1, column=0, sticky="nsew")
+        scrollbar_draw_y.config(command=self.canvas.yview)
+        scrollbar_draw_y.grid(row=1, column=1, sticky="ns")
+        scrollbar_draw_x.config(command=self.canvas.xview)
+        scrollbar_draw_x.grid(row=2, column=0, sticky="ew")
+
+        self.frame_canvas = tk.Frame(self.canvas)
+        self.canvas.create_window((0, 0), window=self.frame_canvas, anchor="nw")
+
+        ### 创建输出框
         label_output = tk.Label(frame_right, text="小助手", font=font)
-        label_output.grid(row=0, column=0, sticky="w")
+        label_output.grid(row=3, column=0, sticky="w")
         scrollbar_output = tk.Scrollbar(frame_right)
         text_output = tk.Text(frame_right, 
                             width=10, 
-                            height=20, 
+                            height=10, 
                             yscrollcommand=scrollbar_output.set,
                             font=font)
-        text_output.grid(row=1, column=0, sticky="nsew")
+        text_output.grid(row=4, column=0, sticky="nsew")
         scrollbar_output.config(command=text_output.yview)
-        scrollbar_output.grid(row=1, column=1, sticky="ns")
+        scrollbar_output.grid(row=4, column=1, sticky="ns")
         text_output.insert("end", WELCOME_TEXT)
-        ## 创建图形绘制框
-        #TODO:
-        # frame_draw = tk.Frame(root)
-        # frame_draw.
+        
+        ### 图形绘制比例尺
+        frame_scalebar = tk.Frame(root)
+        frame_scalebar.pack(side="right", fill="both", expand=False, padx=5, pady=5)
+        scalebar = tk.Scale(root, from_=1, to=10, 
+                         orient="vertical", 
+                         command=self.update_scale_factor, 
+                         sliderlength=10, length=100, width=10)
+        scalebar.set(5)  # 默认初始值为
+        scalebar.pack(side="top", padx=5, pady=5)
 
         ## 让文本框适应窗口大小
         frame_left.rowconfigure(1, weight=1)
@@ -95,6 +128,7 @@ class FRChatGUIPalletize(FRChatGUI):
         frame_left.columnconfigure(0, weight=1)
         frame_left.columnconfigure(1, weight=0)
         frame_right.rowconfigure(1, weight=1)
+        frame_right.rowconfigure(4, weight=3)
         frame_right.columnconfigure(0, weight=1)
         frame_right.columnconfigure(1, weight=0)
 
@@ -136,7 +170,7 @@ class FRChatGUIPalletize(FRChatGUI):
             if not os.path.exists(dir):
                 os.mkdir(dir)
             yaml_filepath = os.path.join(dir, f'param_{self.yaml_name[-1]}.yaml')
-            # 将匹配到的参数配置内容保存到yaml文件中
+            # 将参数配置保存到yaml文件中
             if self.yaml_content:
                 with open(yaml_filepath, 'w', encoding='utf-8') as f:
                     for match in self.yaml_content:
@@ -144,6 +178,46 @@ class FRChatGUIPalletize(FRChatGUI):
                         print("[INFO] yaml文件已输出!")
                 # 为了防止token超限，使用initial prompt重新初始化
                 self.reinit_prompt()
+        
+        # 获取参数配置中图形绘制的相关数据
+        print("[INFO] 开始提取图形绘制数据") 
+        box_length_match = re.compile(r"工件长度: ([\s\S]*?)\n")
+        box_length = box_length_match.findall(response)
+        if box_length:
+            self.box_length = float(box_length[-1])
+        box_width_match = re.compile(r"工件宽度: ([\s\S]*?)\n")
+        box_width = box_width_match.findall(response)
+        if box_width:
+            self.box_width = float(box_width[-1])
+        pallet_length_match = re.compile(r"前边长度: ([\s\S]*?)\n")
+        pallet_length = pallet_length_match.findall(response)
+        if pallet_length:
+            self.pallet_length = float(pallet_length[-1])
+        pallet_width_match = re.compile(r"侧边长度: ([\s\S]*?)\n")
+        pallet_width = pallet_width_match.findall(response)
+        if pallet_width:
+            self.pallet_width = float(pallet_width[-1])
+        box_interval_match = re.compile(r"工件间隔: ([\s\S]*?)\n")
+        box_interval = box_interval_match.findall(response)
+        if box_interval:
+            self.box_interval = float(box_interval[-1])
+        nrow_match = re.compile(r"每层行数: ([\s\S]*?)\n")
+        nrow = nrow_match.findall(response)
+        if nrow:
+            self.nrow = int(nrow[-1])
+        ncol_match = re.compile(r"每层列数: ([\s\S]*?)\n")
+        ncol = ncol_match.findall(response)
+        if ncol:
+            self.ncol = int(ncol[-1])
+        move_direction_match = re.compile(r"移动方向: ([\s\S]*?)\n")
+        move_direction = move_direction_match.findall(response)
+        if move_direction:
+            self.move_direction = move_direction[-1]
+        first_corner_match = re.compile(r"起始方位: ([\s\S]*?)\n")
+        first_corner = first_corner_match.findall(response)
+        if first_corner:
+            self.first_corner = eval(first_corner[-1])
+        print(f"[INFO] 图形绘制参数:\n工件长度:{self.box_length}, 工件宽度:{self.box_width}, 托盘前边长度:{self.pallet_length}, 托盘侧边长度:{self.pallet_width}, 工件间隔:{self.box_interval}, 每层行数:{self.nrow}, 每层列数:{self.ncol}, 移动方向:{self.move_direction}, 起始方位:{self.first_corner}")
 
         # 匹配python相关内容
         python_name_pattern = re.compile(r"palletize_([\s\S]*?)\.py")
@@ -161,27 +235,14 @@ class FRChatGUIPalletize(FRChatGUI):
                     for match in self.python_content:
                         f.write(f"{match}\n")
                         print("[INFO] python程序已输出!")
-        
-        # 匹配图形绘制相关数据
-        box_length_match = re.search(r"长度: (\d+.\d+)", self.yaml_content)
-        self.box_length = float(box_length_match)
-        box_width_match = re.search(r"宽度: (\d+.\d+)", self.yaml_content)
-        self.box_width = float(box_width_match)
-        pallet_length_match = re.search(r"前边长度: (\d+.\d+)", self.yaml_content)
-        self.pallet_length = float(pallet_length_match)
-        pallet_width_match = re.search(r"侧边长度: (\d+.\d+)", self.yaml_content)
-        self.pallet_width = float(pallet_width_match)
-        box_interval = re.search(r"工件间隔: (\d+.\d+)", self.yaml_content)
-        self.box_interval = float(box_interval)
-        nrow_match = re.search(r"每层行数: (\d+)", self.yaml_content)
-        self.nrow = int(nrow_match)
-        ncol_match = re.search(r"每层列数: (\d+)", self.yaml_content)
-        self.ncol = int(ncol_match)
 
     
-    def start_gui(self):
+    def start_gui(self, *args):
         self.text_input_history, self.text_input, self.text_output = self.create_gui()
+        # 绘制示意图
+        self.draw_rectangle()
         self.root.bind("<Control-Key-s>", self.process_message)
+        self.root.bind("<Control-Key-s>", self.draw_rectangle, add="+")
         self.root.bind("<Control-Key-r>", self.reinit_prompt)
         ## 开始事件循环
         self.root.mainloop()
@@ -196,25 +257,47 @@ class FRChatGUIPalletize(FRChatGUI):
         print("[Reinit] bot_messages", self.bot.messages)
 
 
-    def update_scale_factor(self, value):
+    def update_scale_factor(self, *args):
         """
             图形绘制比例尺
         """
-        global SCALE_FACTOR
-        SCALE_FACTOR = int(value)
+        self.scale_factor = int(*args)
         self.draw_rectangle()
 
 
-    def draw_rectangle(self):
+    def draw_rectangle(self, *args):
         """
             根据参数配置绘制图形
         """
         # 缩放矩形的长度、宽度和摆放间隔
-        scaled_box_length = self.box_length * SCALE_FACTOR
-        scaled_box_width = self.box_width * SCALE_FACTOR
-        scaled_box_interval = self.box_interval * SCALE_FACTOR
+        scaled_box_length = self.box_length * self.scale_factor
+        scaled_box_width = self.box_width * self.scale_factor
+        scaled_box_interval = self.box_interval * self.scale_factor
+        # print(f"[INFO] 当前缩放系数: {self.scale_factor}")
+        # print(f"[INFO] 缩放后的图形绘制参数: {scaled_box_length}, {scaled_box_width}, {scaled_box_interval}")
+        scaled_pallet_length = self.pallet_length * self.scale_factor
+        scaled_pallet_width = self.pallet_width * self.scale_factor
+
+        if any([scaled_box_length, scaled_box_width, scaled_box_interval, scaled_pallet_length, scaled_pallet_width]) == 0:
+            print("[IGNORE] 存在无效的图形参数")
+            return
+        else:
+            print("[INFO] 获取到图形参数,准备绘制图形")
 
         self.canvas.delete("rectangle")
+        self.canvas.delete("pallet_origin")
+        self.canvas.delete("pallet_xarrow")
+        self.canvas.delete("pallet_yarrow")
+        # 绘制托盘
+        pallet_x1 = 10 
+        pallet_y1 = 10
+        pallet_x2 = pallet_x1 + scaled_pallet_length
+        pallet_y2 = pallet_y1 + scaled_pallet_width
+        self.canvas.create_rectangle(pallet_x1, pallet_y1, pallet_x2, pallet_y2, fill="grey", tags="rectangle")
+
+        # 绘制工件
+        first_corner_row = 0 if self.first_corner[0] == 0 else (self.nrow-1)
+        first_corner_col = 0 if self.first_corner[1] == 0 else (self.ncol-1)
 
         for row in range(self.nrow):
             for col in range(self.ncol):
@@ -222,5 +305,43 @@ class FRChatGUIPalletize(FRChatGUI):
                 y1 = 10 + (scaled_box_width + scaled_box_interval) * row
                 x2 = x1 + scaled_box_length
                 y2 = y1 + scaled_box_width
-                self.canvas.create_rectangle(x1, y1, x2, y2, fill="cyan", tags="rectangle")
-                        
+                
+                if row==first_corner_row and col==first_corner_col:
+                    self.canvas.create_rectangle(x1, y1, x2, y2, fill="white", tags="rectangle")
+                else:
+                    self.canvas.create_rectangle(x1, y1, x2, y2, fill="black", tags="rectangle")
+        
+        # 绘制其他元素
+        ## 绘制原点
+        pallet_origin_x = scaled_box_length/2 + (10 + (scaled_box_length + scaled_box_interval) * first_corner_col)
+        pallet_origin_y = scaled_box_width/2 + (10 + (scaled_box_width + scaled_box_interval) * first_corner_row)
+        circle_x1 = pallet_origin_x - 5
+        circle_x2 = pallet_origin_x + 5
+        circle_y1 = pallet_origin_y - 5
+        circle_y2 = pallet_origin_y + 5
+        self.canvas.create_oval(circle_x1, circle_y1, circle_x2, circle_y2, fill="yellow", tags="pallet_origin")
+        ## 绘制移动方向
+        if self.move_direction == 'Y':
+            yarrow_x1, yarrow_y1 = pallet_origin_x, pallet_origin_y
+            if first_corner_col == 0:
+                yarrow_x2, yarrow_y2 = pallet_origin_x+20, pallet_origin_y
+            else:
+                yarrow_x2, yarrow_y2 = pallet_origin_x-20, pallet_origin_y
+            self.canvas.create_line(yarrow_x1, yarrow_y1, yarrow_x2, yarrow_y2, arrow="last", width=3, fill="green",tags="pallet_yarrow")
+        elif self.move_direction == 'X':
+            xarrow_x1, xarrow_y1 = pallet_origin_x, pallet_origin_y
+            if first_corner_row == 0:
+                xarrow_x2, xarrow_y2 = pallet_origin_x, pallet_origin_y+20
+            else:
+                xarrow_x2, xarrow_y2 = pallet_origin_x, pallet_origin_y-20
+            self.canvas.create_line(xarrow_x1, xarrow_y1, xarrow_x2, xarrow_y2, arrow="last", width=3, fill="red",tags="pallet_xarrow")
+        elif not self.move_direction:
+            yarrow_x1, yarrow_y1 = pallet_origin_x, pallet_origin_y
+            yarrow_x2, yarrow_y2 = pallet_origin_x+20, pallet_origin_y
+            self.canvas.create_line(yarrow_x1, yarrow_y1, yarrow_x2, yarrow_y2, arrow="last", width=3, fill="green",tags="pallet_yarrow")
+            xarrow_x1, xarrow_y1 = pallet_origin_x, pallet_origin_y
+            xarrow_x2, xarrow_y2 = pallet_origin_x, pallet_origin_y+20
+            self.canvas.create_line(xarrow_x1, xarrow_y1, xarrow_x2, xarrow_y2, arrow="last", width=3, fill="red",tags="pallet_xarrow")
+
+        self.frame_canvas.update_idletasks()
+        self.canvas.config(scrollregion=self.canvas.bbox("all"))

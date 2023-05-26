@@ -57,15 +57,15 @@ class FRPalletize(object):
             执行码垛任务
         """
         # 工件参数
-        box_length = self.params['工件配置']['长度']
-        box_width = self.params['工件配置']['宽度']
-        box_height = self.params['工件配置']['高度']
+        box_length = self.params['工件配置']['工件长度']
+        box_width = self.params['工件配置']['工件宽度']
+        box_height = self.params['工件配置']['工件高度']
         suction_point = self.params['工件配置']['吸盘位置']
 
         # 托盘参数
         pallet_length = self.params['托盘配置']['前边长度']
         pallet_width = self.params['托盘配置']['侧边长度']
-        pallet_height = self.params['托盘配置']['高度']
+        pallet_height = self.params['托盘配置']['托盘高度']
         p_trans = self.params['托盘配置']['工位过渡点']
 
         # 模式参数
