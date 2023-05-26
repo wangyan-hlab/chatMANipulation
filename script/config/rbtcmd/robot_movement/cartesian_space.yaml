@@ -25,7 +25,7 @@
         type: double
         description: 速度缩放因子，[0.0~100.0]
       - name: blendR
-        type: int
+        type: double
         description: 运动到位(阻塞)-[-1.0]，平滑时间(非阻塞)-[0~500]，单位[ms]
       - name: exaxis_pos
         type: double

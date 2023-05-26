@@ -1,7 +1,11 @@
+/.vscode
 /.idea
+/*.egg-info
 */test*
-*.txt
+*record_*.txt
 *.pdf
 **/__pycache__
 *.env
 *.sh
+/script/config/palletize/param_*
+/script/palletize_program/palletize_*
