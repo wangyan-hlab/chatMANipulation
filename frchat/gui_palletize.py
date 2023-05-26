@@ -309,7 +309,7 @@ class FRChatGUIPalletize(FRChatGUI):
                 if row==first_corner_row and col==first_corner_col:
                     self.canvas.create_rectangle(x1, y1, x2, y2, fill="white", tags="rectangle")
                 else:
-                    self.canvas.create_rectangle(x1, y1, x2, y2, fill="black", tags="rectangle")
+                    self.canvas.create_rectangle(x1, y1, x2, y2, fill="cyan", tags="rectangle")
         
         # 绘制其他元素
         ## 绘制原点
