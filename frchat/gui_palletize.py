@@ -12,7 +12,7 @@ class FRChatGUIPalletize(FRChatGUI):
         Data: 2023/05/23
     """
     
-    def __init__(self, title, width=1024, height=768, font=('Times New Roman', 10)) -> None:
+    def __init__(self, title, width=2048, height=1024, font=('Times New Roman', 15)) -> None:
         super().__init__(title, width, height, font)
         self.bot = FRChatBotPalletize(messages=MSG_PALLETIZE_INTRO,temperature=0.1)
         self.init_prompt =  copy.deepcopy(MSG_PALLETIZE_INTRO)
@@ -115,11 +115,11 @@ class FRChatGUIPalletize(FRChatGUI):
         ### 图形绘制比例尺
         frame_scalebar = tk.Frame(root)
         frame_scalebar.pack(side="right", fill="both", expand=False, padx=5, pady=5)
-        scalebar = tk.Scale(root, from_=1, to=10, 
+        scalebar = tk.Scale(root, from_=10, to=500, 
                          orient="vertical", 
                          command=self.update_scale_factor, 
                          sliderlength=10, length=100, width=10)
-        scalebar.set(5)  # 默认初始值为
+        scalebar.set(100)  # 默认初始值为
         scalebar.pack(side="top", padx=5, pady=5)
 
         ## 让文本框适应窗口大小
@@ -140,7 +140,7 @@ class FRChatGUIPalletize(FRChatGUI):
         ### 创建一个空菜单，用于添加文件选项
         menubar = tk.Menu(root) 
         filemenu = tk.Menu(menubar, tearoff=0)
-        menubar.add_cascade(label="配置文件", menu=filemenu)
+        menubar.add_cascade(label="配置文件", menu=filemenu, font=font)
         ### 将 “打开” 选项添加到菜单中
         filemenu.add_command(label="打开", command=self.open_file)
         ### 将单栏添加到主窗口中
@@ -270,19 +270,17 @@ class FRChatGUIPalletize(FRChatGUI):
             根据参数配置绘制图形
         """
         # 缩放矩形的长度、宽度和摆放间隔
-        scaled_box_length = self.box_length * self.scale_factor
-        scaled_box_width = self.box_width * self.scale_factor
-        scaled_box_interval = self.box_interval * self.scale_factor
-        # print(f"[INFO] 当前缩放系数: {self.scale_factor}")
+        scaled_box_length = self.box_length * self.scale_factor*0.01
+        scaled_box_width = self.box_width * self.scale_factor*0.01
+        scaled_box_interval = self.box_interval * self.scale_factor*0.01
+        # print(f"[INFO] 当前缩放系数(%): {self.scale_factor}")
         # print(f"[INFO] 缩放后的图形绘制参数: {scaled_box_length}, {scaled_box_width}, {scaled_box_interval}")
-        scaled_pallet_length = self.pallet_length * self.scale_factor
-        scaled_pallet_width = self.pallet_width * self.scale_factor
+        scaled_pallet_length = self.pallet_length * self.scale_factor*0.01
+        scaled_pallet_width = self.pallet_width * self.scale_factor*0.01
 
         if any([scaled_box_length, scaled_box_width, scaled_box_interval, scaled_pallet_length, scaled_pallet_width]) == 0:
             print("[IGNORE] 存在无效的图形参数")
             return
-        else:
-            print("[INFO] 获取到图形参数,准备绘制图形")
 
         self.canvas.delete("rectangle")
         self.canvas.delete("pallet_origin")
@@ -324,16 +322,16 @@ class FRChatGUIPalletize(FRChatGUI):
         if self.move_direction == 'Y':
             yarrow_x1, yarrow_y1 = pallet_origin_x, pallet_origin_y
             if first_corner_col == 0:
-                yarrow_x2, yarrow_y2 = pallet_origin_x+20, pallet_origin_y
+                yarrow_x2, yarrow_y2 = pallet_origin_x+scaled_box_length/2, pallet_origin_y
             else:
-                yarrow_x2, yarrow_y2 = pallet_origin_x-20, pallet_origin_y
+                yarrow_x2, yarrow_y2 = pallet_origin_x-scaled_box_length/2, pallet_origin_y
             self.canvas.create_line(yarrow_x1, yarrow_y1, yarrow_x2, yarrow_y2, arrow="last", width=3, fill="green",tags="pallet_yarrow")
         elif self.move_direction == 'X':
             xarrow_x1, xarrow_y1 = pallet_origin_x, pallet_origin_y
             if first_corner_row == 0:
-                xarrow_x2, xarrow_y2 = pallet_origin_x, pallet_origin_y+20
+                xarrow_x2, xarrow_y2 = pallet_origin_x, pallet_origin_y+scaled_box_width/2
             else:
-                xarrow_x2, xarrow_y2 = pallet_origin_x, pallet_origin_y-20
+                xarrow_x2, xarrow_y2 = pallet_origin_x, pallet_origin_y-scaled_box_width/2
             self.canvas.create_line(xarrow_x1, xarrow_y1, xarrow_x2, xarrow_y2, arrow="last", width=3, fill="red",tags="pallet_xarrow")
         elif not self.move_direction:
             yarrow_x1, yarrow_y1 = pallet_origin_x, pallet_origin_y
