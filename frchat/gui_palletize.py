@@ -14,7 +14,7 @@ class FRChatGUIPalletize(FRChatGUI):
     
     def __init__(self, title, width=1024, height=768, font=('Times New Roman', 10), robot_connect=False) -> None:
         super().__init__(title, width, height, font)
-        self.bot = FRChatBotPalletize(messages=MSG_PALLETIZE_INTRO,temperature=0.1)
+        self.bot = FRChatBotPalletize(messages=MSG_PALLETIZE_INTRO,temperature=0.0)
         self.init_prompt =  copy.deepcopy(MSG_PALLETIZE_INTRO)
         # 文件保存相关
         self.yaml_name = None
@@ -282,7 +282,7 @@ class FRChatGUIPalletize(FRChatGUI):
             重新初始化prompt
         """
         self.bot.messages.clear()
-        self.bot.messages = self.init_prompt
+        self.bot.messages = copy.deepcopy(self.init_prompt)
         print("[Reinit] bot_messages", self.bot.messages)
 
 
