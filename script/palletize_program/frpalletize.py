@@ -263,12 +263,14 @@ class FRPalletize(object):
             self.robot_motion(self.rbt, p_home, motion_type=motion)
             # 拿起工件
             # robot_pickup()
+            self.rbt.robot.SetToolDO()  #TODO:吸盘吸取
             # 机械臂移动到工位过渡点
             self.robot_motion(self.rbt, p_trans, motion_type=motion)
             # 移动机器人到目标点
             self.robot_motion(self.rbt, target_point, motion_type=motion)
             # 释放工件
             # robot_putdown()
+            self.rbt.robot.SetToolDO()  #TODO:吸盘释放
             # 机械臂移动到工位过渡点
             self.robot_motion(self.rbt, p_trans, motion_type=motion)
 
