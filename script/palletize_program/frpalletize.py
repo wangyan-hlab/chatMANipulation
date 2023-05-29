@@ -49,7 +49,7 @@ class FRPalletize(object):
         elif motion_type == 'line':
             robot.MoveL(point, target_flag='desc')
         else:
-            raise ValueError("无效的机械臂运动方式,必须是'ptp'或'line'")
+            raise ValueError("无效的运动方式,必须是'ptp'或'line'")
 
 
     def execute_palletize(self):
@@ -97,20 +97,21 @@ class FRPalletize(object):
         elif work_direction == 'unload':
             start_layer, end_layer, step_layer = nlayer-1, -1, -1
         else:
-            raise ValueError("无效的堆叠方式")
+            raise ValueError("无效的堆叠方式,必须是'load'或'unload'")
 
         for layer in range(start_layer, end_layer, step_layer):
             # 计算当前层高度
             z = layer * box_height
             # 16 situations: 4 corners x 2 move_directions x 2 patterns
             # 选择起始方位,方位代表的位置如下图所示: [0,0] / [0,1] / [1,0] / [1,1]
-            # ==================
+            # ================== Y
             # |[0,0]      [0,1]|
             # |                |
             # |                |
             # |                |
             # |[1,0]      [1,1]|
             # ==================
+            # X
             if first_corner == [0,0]:
                 # 选择运动方向: 'Y'--沿托盘前边 / ‘X’--沿托盘侧边
                 if move_direction == 'Y':
@@ -141,7 +142,7 @@ class FRPalletize(object):
                             else:
                                 start_row, end_row, step_row = nrow-1, -1, -1
                         else:
-                            raise ValueError("无效的运动方式,必须是'headtail'或'zigzag'")
+                            raise ValueError("无效的运动路径,必须是'headtail'或'zigzag'")
                         for row in range(start_row, end_row, step_row):
                             x = row * (box_width+box_interval)
                             box_points.append[x,y,z]
@@ -175,7 +176,7 @@ class FRPalletize(object):
                             else:
                                 start_row, end_row, step_row = nrow-1, -1, -1
                         else:
-                            raise ValueError("无效的运动方式,必须是'headtail'或'zigzag'")
+                            raise ValueError("无效的运动路径,必须是'headtail'或'zigzag'")
                         for row in range(start_row, end_row, step_row):
                             x = row * (box_width+box_interval)
                             box_points.append([x,y,z])
@@ -209,7 +210,7 @@ class FRPalletize(object):
                             else:
                                 start_row, end_row, step_row = -nrow+1, 1, 1
                         else:
-                            raise ValueError("无效的运动方式,必须是'headtail'或'zigzag'")
+                            raise ValueError("无效的运动路径,必须是'headtail'或'zigzag'")
                         for row in range(start_row, end_row, step_row):
                             x = row * (box_width+box_interval)
                             box_points.append[x,y,z]
@@ -243,7 +244,7 @@ class FRPalletize(object):
                             else:
                                 start_row, end_row, step_row = -nrow+1, 1, 1
                         else:
-                            raise ValueError("无效的运动方式,必须是'headtail'或'zigzag'")
+                            raise ValueError("无效的运动路径,必须是'headtail'或'zigzag'")
                         for row in range(start_row, end_row, step_row):
                             x = row * (box_width+box_interval)
                             box_points.append[x,y,z]
@@ -251,7 +252,7 @@ class FRPalletize(object):
                     raise ValueError("无效的移动方向,必须是'X'或'Y'")
             
             else:
-                raise ValueError("无效的起始方位,必须是[0,0]/[0,1]/[1,0]/[1,1]")
+                raise ValueError("无效的起始方位,必须是[0,0]、[0,1]、[1,0]或[1,1]")
         
         # 计算机器人坐标系下的目标点坐标
         target_points = [self.get_target_point(box_point, p_pallet_origin=p_pallet_origin, suction_point=suction_point) 
