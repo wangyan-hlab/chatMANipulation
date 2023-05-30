@@ -25,7 +25,7 @@ class FRPalletize(object):
         rpy = rm.rotmat_to_euler(homomat[:3, :3])
         return np.concatenate((homomat[:3, 3], rpy))
 
-    def get_target_point(self, box_point, p_pallet_origin, p_suction_point):
+    def get_target_point(self, box_point, first_corner, move_direction, p_path, p_pallet_origin, p_suction_point):
         """
             获得机器人坐标系下的机器人运动目标点
 
@@ -48,6 +48,15 @@ class FRPalletize(object):
 
         tran_pallet_to_tcp = np.array([[0,1,0,0],[1,0,0,0],[0,0,-1,0],[0,0,0,1]]) # TODO:需要进行一般化
         tran_suction_to_tcp = np.array([[0,1,0,0],[1,0,0,0],[0,0,-1,0],[0,0,0,1]])
+
+        if first_corner == [0,0]:
+            pass
+        elif first_corner == [0,1]:
+            pass
+        elif first_corner == [1,0]:
+            pass
+        elif first_corner == [1,1]:
+            pass
         
         tran_pallet_to_robot = tran_tcp_to_robot_ppo @ tran_pallet_to_tcp
         
@@ -287,7 +296,11 @@ class FRPalletize(object):
         for index, box_point in enumerate(box_points):
             pallet_origin = copy.deepcopy(p_pallet_origin)
             suction_point = copy.deepcopy(p_suction_point)
+            path_point = copy.deepcopy(p_path)
             target_point = self.get_target_point(box_point, 
+                                                 first_corner, 
+                                                 move_direction,
+                                                 p_path=path_point,
                                                  p_pallet_origin=pallet_origin, 
                                                  p_suction_point=suction_point) 
             print(f"托盘坐标系下第{index+1}个工件位置: {box_point}")
