@@ -31,9 +31,11 @@ class FRPalletize(object):
                 target_point: 机器人坐标系下,机器人的运动目标点
         """
         [x, y, z] = box_point
-        tran_pallet_to_robot = euler_to_homomat(p_pallet_origin)  # 原点和第一个箱子几何中心重合
+        tran_tcp_to_robot = euler_to_homomat(p_pallet_origin)  # 原点和第一个箱子几何中心重合
+        tran_pallet_to_tcp = euler_to_homomat([0, 0, 0, np.pi, 0, -np.pi/2]) # TODO:需要进行一般化
+        tran_pallet_to_robot = tran_tcp_to_robot @ tran_pallet_to_tcp
         tran_suction_to_box = np.linalg.inv(tran_pallet_to_robot) @ euler_to_homomat(suction_point)
-        tran_box_to_pallet = euler_to_homomat([x,y,z,0,0,0])
+        tran_box_to_pallet = euler_to_homomat([x, y, z, 0, 0, 0])
         target_point_homomat = tran_pallet_to_robot @ tran_box_to_pallet @ tran_suction_to_box
         target_point = euler_from_homomat(target_point_homomat)
         
