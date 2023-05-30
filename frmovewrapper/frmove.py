@@ -53,7 +53,7 @@ class FRCobot(object):
             self.ResetAllError() # 尝试清除错误状态
             return
         else:
-            print(f"GetJointPos 成功,关节位置({unit}):", getjntpos_ret[1:])
+            # print(f"GetJointPos 成功,关节位置({unit}):", getjntpos_ret[1:])
             return getjntpos_ret[1:]
 
 
@@ -83,7 +83,7 @@ class FRCobot(object):
             self.ResetAllError() # 尝试清除错误状态
             return
         else:
-            print(f"GetTCPPose 成功,{tool} TCP位姿:", gettcppose_ret[1:])
+            # print(f"GetTCPPose 成功,{tool} TCP位姿:", gettcppose_ret[1:])
             return gettcppose_ret[1:]
 
 
@@ -113,7 +113,7 @@ class FRCobot(object):
             self.ResetAllError() # 尝试清除错误状态
             return
         else:
-            print(f"GetFrameNum 成功,{frame}坐标系编号:", getframenum_ret[1])
+            # print(f"GetFrameNum 成功,{frame}坐标系编号:", getframenum_ret[1])
             return getframenum_ret[1]
 
 
@@ -143,7 +143,7 @@ class FRCobot(object):
             self.ResetAllError() # 尝试清除错误状态
             return
         else:
-            print(f"GetFrameOffset 成功,{frame}坐标系相对位姿):", getframeoffset_ret[1:])
+            # print(f"GetFrameOffset 成功,{frame}坐标系相对位姿):", getframeoffset_ret[1:])
             return getframeoffset_ret[1:]
 
 
@@ -193,7 +193,7 @@ class FRCobot(object):
             self.ResetAllError() # 尝试清除错误状态
             return
         else:
-            print(f"GetForwardKin 成功,工具TCP位姿):", getfk_ret[1:])
+            # print(f"GetForwardKin 成功,工具TCP位姿):", getfk_ret[1:])
             return getfk_ret[1:]
 
 
@@ -221,7 +221,7 @@ class FRCobot(object):
                 getikref_ret = self.robot.GetInverseKinRef(flag, desc_pos, joint_pos_ref)
                 if getikref_ret[0] == 0:
                     target_joint_pos = getikref_ret[1:]
-                    print("GetInverseKinRef 成功,关节位置为:", target_joint_pos)
+                    # print("GetInverseKinRef 成功,关节位置为:", target_joint_pos)
                     return target_joint_pos
                 else:
                     print("GetInverseKinRef 失败,错误码:", getikref_ret[0])

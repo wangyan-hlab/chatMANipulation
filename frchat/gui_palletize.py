@@ -173,7 +173,10 @@ class FRChatGUIPalletize(FRChatGUI):
         if get_pose:
             if get_pose[0] == "tcp":
                 if self.robot_connect:
-                    self.text_input.insert(f"\n{str(self.frrbt.GetTCPPose())}")
+                    tcp_pose = self.frrbt.GetTCPPose()
+                    for index, data in enumerate(tcp_pose):
+                        tcp_pose[index] = round(data, 3)
+                    self.text_input.insert("end", f"\n{str(tcp_pose)}")
                 else:
                     self.text_input.insert("end", f"\n[INFO] 请连接机器人以获取数据\n")
             else:
