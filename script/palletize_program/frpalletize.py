@@ -43,24 +43,76 @@ class FRPalletize(object):
             p_pallet_origin[i] = np.deg2rad(p_pallet_origin[i])
             p_suction_point[i] = np.deg2rad(p_suction_point[i])
 
-        tran_tcp_to_robot_ppo = self.euler_to_homomat(p_pallet_origin)  # 原点和第一个箱子几何中心重合,ppo=p_pallet_origin
-        tran_tcp_to_robot_psp = self.euler_to_homomat(p_suction_point) # psp=p_suction_point
+        tran_tcp_ppo_to_robot = self.euler_to_homomat(p_pallet_origin)  # 原点和第一个箱子几何中心重合,ppo=p_pallet_origin
+        tran_tcp_psp_to_robot = self.euler_to_homomat(p_suction_point) # psp=p_suction_point
+        tran_tcp_path_to_robot = self.euler_to_homomat(p_path)
 
-        tran_pallet_to_tcp = np.array([[0,1,0,0],[1,0,0,0],[0,0,-1,0],[0,0,0,1]]) # TODO:需要进行一般化
-        tran_suction_to_tcp = np.array([[0,1,0,0],[1,0,0,0],[0,0,-1,0],[0,0,0,1]])
-
+        tran_path_to_ppo = np.linalg.inv(tran_tcp_ppo_to_robot) @ tran_tcp_path_to_robot
+        
         if first_corner == [0,0]:
-            pass
+            theta = np.arctan(tran_path_to_ppo[1, 3]/tran_path_to_ppo[0, 3])
+            if move_direction == 'X':
+                tran_pallet_to_tcp = np.array([
+                    [np.cos(theta), np.sin(theta), 0, 0],
+                    [np.sin(theta), -np.cos(theta), 0, 0],
+                    [0, 0, -1, 0],
+                    [0, 0, 0, 1]])
+            elif move_direction == 'Y':
+                tran_pallet_to_tcp = np.array([
+                    [-np.sin(theta), np.cos(theta), 0, 0],
+                    [np.cos(theta), np.sin(theta), 0, 0],
+                    [0, 0, -1, 0],
+                    [0, 0, 0, 1]])
+            
         elif first_corner == [0,1]:
-            pass
+            theta = np.arctan(tran_path_to_ppo[1, 3]/tran_path_to_ppo[0, 3])
+            if move_direction == 'X':
+                tran_pallet_to_tcp = np.array([
+                    [np.cos(theta), np.sin(theta), 0, 0],
+                    [np.sin(theta), -np.cos(theta), 0, 0],
+                    [0, 0, -1, 0],
+                    [0, 0, 0, 1]])
+            elif move_direction == 'Y':
+                tran_pallet_to_tcp = np.array([
+                    [np.sin(theta), -np.cos(theta), 0, 0],
+                    [-np.cos(theta), -np.sin(theta), 0, 0],
+                    [0, 0, -1, 0],
+                    [0, 0, 0, 1]])
+
         elif first_corner == [1,0]:
-            pass
+            theta = np.arctan(tran_path_to_ppo[1, 3]/tran_path_to_ppo[0, 3])
+            if move_direction == 'X':
+                tran_pallet_to_tcp = np.array([
+                    [-np.cos(theta), -np.sin(theta), 0, 0],
+                    [-np.sin(theta), np.cos(theta), 0, 0],
+                    [0, 0, -1, 0],
+                    [0, 0, 0, 1]])
+            elif move_direction == 'Y':
+                tran_pallet_to_tcp = np.array([
+                    [-np.sin(theta), np.cos(theta), 0, 0],
+                    [np.cos(theta), np.sin(theta), 0, 0],
+                    [0, 0, -1, 0],
+                    [0, 0, 0, 1]])
+                
         elif first_corner == [1,1]:
-            pass
+            theta = np.arctan(tran_path_to_ppo[1, 3]/tran_path_to_ppo[0, 3])
+            if move_direction == 'X':
+                tran_pallet_to_tcp = np.array([
+                    [-np.cos(theta), -np.sin(theta), 0, 0],
+                    [-np.sin(theta), np.cos(theta), 0, 0],
+                    [0, 0, -1, 0],
+                    [0, 0, 0, 1]])
+            elif move_direction == 'Y':
+                tran_pallet_to_tcp = np.array([
+                    [np.sin(theta), -np.cos(theta), 0, 0],
+                    [-np.cos(theta), -np.sin(theta), 0, 0],
+                    [0, 0, -1, 0],
+                    [0, 0, 0, 1]])
         
-        tran_pallet_to_robot = tran_tcp_to_robot_ppo @ tran_pallet_to_tcp
+        tran_pallet_to_robot = tran_tcp_ppo_to_robot @ tran_pallet_to_tcp
+        tran_suction_to_tcp = tran_pallet_to_tcp
         
-        tran_suction_to_robot = tran_tcp_to_robot_psp @ tran_suction_to_tcp
+        tran_suction_to_robot = tran_tcp_psp_to_robot @ tran_suction_to_tcp
         tran_suction_to_box = np.linalg.inv(tran_pallet_to_robot) @ tran_suction_to_robot
 
         tran_box_to_pallet = self.euler_to_homomat([x, y, z, 0., 0., 0.])
