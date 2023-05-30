@@ -45,8 +45,10 @@ class FRPalletize(object):
 
         tran_tcp_to_robot_ppo = self.euler_to_homomat(p_pallet_origin)  # 原点和第一个箱子几何中心重合,ppo=p_pallet_origin
         tran_tcp_to_robot_psp = self.euler_to_homomat(p_suction_point) # psp=p_suction_point
+
         tran_pallet_to_tcp = np.array([[0,1,0,0],[1,0,0,0],[0,0,-1,0],[0,0,0,1]]) # TODO:需要进行一般化
         tran_suction_to_tcp = np.array([[0,1,0,0],[1,0,0,0],[0,0,-1,0],[0,0,0,1]])
+        
         tran_pallet_to_robot = tran_tcp_to_robot_ppo @ tran_pallet_to_tcp
         
         tran_suction_to_robot = tran_tcp_to_robot_psp @ tran_suction_to_tcp
@@ -103,6 +105,7 @@ class FRPalletize(object):
         # 机械臂移动参数
         p_home = self.params['机器人移动配置']['作业原点']
         p_pallet_origin = self.params['机器人移动配置']['托盘原点']
+        p_path = self.params['机器人移动配置']['路径点']
         first_corner = self.params['机器人移动配置']['起始方位']
         move_direction = self.params['机器人移动配置']['移动方向']
         motion = self.params['机器人移动配置']['运动方式']
