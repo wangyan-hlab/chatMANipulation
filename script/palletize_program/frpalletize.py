@@ -455,3 +455,16 @@ class FRPalletize(object):
                 
         else:
             raise ValueError("无效的堆叠方式,必须是'load'或'unload'")
+
+# from frmovewrapper import robotmath as rm
+# import numpy as np
+
+# xa = np.array([1, 0, 0])
+# ya = np.array([0, 1, 0])
+# za = np.array([0, 0, 1])
+
+# x_new = np.array([1, 1, 1])
+# z_new = np.array([1, 1, -2])
+# y_new = np.cross(x_new, z_new)
+# print(y_new)
+# print(rm.unit_vector(x_new), rm.unit_vector(y_new), rm.unit_vector(z_new))

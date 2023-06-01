@@ -133,7 +133,7 @@ def rotmat_to_euler(rotmat, axes='sxyz'):
     """
     ax, ay, az = _euler_from_matrix(rotmat, axes)
     return np.array([ax, ay, az])
-
+ 
 
 def rotmat_between_vectors(v1, v2):
     """
