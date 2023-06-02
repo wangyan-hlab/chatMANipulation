@@ -5,6 +5,7 @@ import warnings
 import functools
 import numpy as np
 import numpy.typing as npt
+from sklearn import cluster
 import matplotlib.pyplot as plt
 from scipy.spatial.transform import Slerp
 from scipy.spatial.transform import Rotation as R
@@ -58,10 +59,9 @@ def rotmat_from_quaternion(quaternion):
     q *= math.sqrt(2.0 / n)
     q = np.outer(q, q)
     return np.array([
-        [1.0 - q[2, 2] - q[3, 3], q[1, 2] - q[3, 0], q[1, 3] + q[2, 0], 0.0],
-        [q[1, 2] + q[3, 0], 1.0 - q[1, 1] - q[3, 3], q[2, 3] - q[1, 0], 0.0],
-        [q[1, 3] - q[2, 0], q[2, 3] + q[1, 0], 1.0 - q[1, 1] - q[2, 2], 0.0],
-        [0.0, 0.0, 0.0, 1.0]])
+        [1.0 - q[2, 2] - q[3, 3], q[1, 2] - q[3, 0], q[1, 3] + q[2, 0]],
+        [q[1, 2] + q[3, 0], 1.0 - q[1, 1] - q[3, 3], q[2, 3] - q[1, 0]],
+        [q[1, 3] - q[2, 0], q[2, 3] + q[1, 0], 1.0 - q[1, 1] - q[2, 2]]])
 
 
 def rotmat_to_quaternion(rotmat):
@@ -133,7 +133,7 @@ def rotmat_to_euler(rotmat, axes='sxyz'):
     """
     ax, ay, az = _euler_from_matrix(rotmat, axes)
     return np.array([ax, ay, az])
- 
+
 
 def rotmat_between_vectors(v1, v2):
     """
@@ -163,12 +163,12 @@ def rotmat_average(rotmatlist, bandwidth=10):
     """
     if len(rotmatlist) == 0:
         return False
-    quaternionlist = []
+    quaternion_list = []
     for rotmat in rotmatlist:
-        quaternionlist.append(quaternion_from_matrix(rotmat))
-    quatavg = quaternion_average(quaternionlist, bandwidth=bandwidth)
-    rotmatavg = rotmat_from_quaternion(quatavg)[:3, :3]
-    return rotmatavg
+        quaternion_list.append(quaternion_from_matrix(rotmat))
+    quat_avg = quaternion_average(quaternion_list, bandwidth=bandwidth)
+    rotmat_avg = rotmat_from_quaternion(quat_avg)
+    return rotmat_avg
 
 
 def rotmat_slerp(rotmat0, rotmat1, nval):
@@ -269,6 +269,23 @@ def homomat_average(homomatlist, bandwidth=10):
     return homomat_from_posrot(posavg, rotmatavg)
 
 
+def homomat_from_quaternion(quaternion):
+    """
+    convert a quaterion to rotmat
+    """
+    q = np.array(quaternion, dtype=np.float64, copy=True)
+    n = np.dot(q, q)
+    if n < _EPS:
+        return np.identity(4)
+    q *= math.sqrt(2.0 / n)
+    q = np.outer(q, q)
+    return np.array([
+        [1.0 - q[2, 2] - q[3, 3], q[1, 2] - q[3, 0], q[1, 3] + q[2, 0], 0.0],
+        [q[1, 2] + q[3, 0], 1.0 - q[1, 1] - q[3, 3], q[2, 3] - q[1, 0], 0.0],
+        [q[1, 3] - q[2, 0], q[2, 3] + q[1, 0], 1.0 - q[1, 1] - q[2, 2], 0.0],
+        [0.0, 0.0, 0.0, 1.0]])
+
+
 def interplate_pos_rotmat(start_pos,
                           start_rotmat,
                           goal_pos,
@@ -326,6 +343,42 @@ def quaternion_from_axangle(angle, axis):
         quaternion *= math.sin(angle / 2.0) / qlen
     quaternion[0] = math.cos(angle / 2.0)
     return quaternion
+
+
+def quaternion_average(quaternionlist, bandwidth=10):
+    """
+    average a list of quaternion (nx4)
+    this is the full version
+    :param rotmatlist:
+    :param bandwidth: meanshift denoising is applied if available
+    :return:
+    author: weiwei
+    date: 20190422
+    """
+    if len(quaternionlist) == 0:
+        return False
+    quaternionarray = np.array(quaternionlist)
+    if bandwidth is not None:
+        anglelist = []
+        for quaternion in quaternionlist:
+            anglelist.append([quaternion_to_axangle(quaternion)[0]])
+        mt = cluster.MeanShift(bandwidth=bandwidth)
+        quaternionarray = quaternionarray[np.where(mt.fit(anglelist).labels_ == 0)]
+    nquat = quaternionarray.shape[0]
+    weights = [1.0 / nquat] * nquat
+    # Form the symmetric accumulator matrix
+    accummat = np.zeros((4, 4))
+    wsum = 0
+    for i in range(nquat):
+        q = quaternionarray[i, :]
+        w_i = weights[i]
+        accummat += w_i * (np.outer(q, q))  # rank 1 update
+        wsum += w_i
+    # scale
+    accummat /= wsum
+    # Get the eigenvector corresponding to largest eigen value
+    quatavg = np.linalg.eigh(accummat)[1][:, -1]
+    return quatavg
 
 
 def quaternion_to_euler(quaternion, axes='sxyz'):
@@ -515,6 +568,25 @@ def quaternion_to_axangle(quaternion):
         angle = 2 * math.acos(w)
         axis = vec / normvec
     return angle, axis
+
+
+def posvec_average(posveclist, bandwidth=10):
+    """
+    average a list of posvec (1x3)
+    :param posveclist:
+    :param denoise: meanshift denoising is applied if True
+    :return:
+    author: weiwei
+    date: 20190422
+    """
+    if len(posveclist) == 0:
+        return False
+    if bandwidth is not None:
+        mt = cluster.MeanShift(bandwidth=bandwidth)
+        posvecavg = mt.fit(posveclist).cluster_centers_[0]
+        return posvecavg
+    else:
+        return np.array(posveclist).mean(axis=0)
 
 
 def gen_2d_spiral_points(max_radius: float = .002,
@@ -1107,7 +1179,7 @@ def rotation_from_matrix(matrix):
     else:
         sina = (R[2, 1] + (cosa - 1.0) * direction[1] * direction[2]) / direction[0]
     angle = math.atan2(sina, cosa)
-    return angle, direction, pint
+    return angle, direction
 
 
 def scale_matrix(factor, origin=None, direction=None):
@@ -2449,6 +2521,7 @@ def _unit_vector(data, axis=None, out=None):
     data /= length
     if out is None:
         return data
+
 
 if __name__ == '__main__':
     start_pos = np.array([1, 0, 0])
