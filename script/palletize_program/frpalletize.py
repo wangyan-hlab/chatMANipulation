@@ -10,7 +10,7 @@ class FRPalletize(object):
         A Palletization template
 
         Author: wangyan
-        Date: 2023/05/25
+        Date: 2023/06/02
     """
 
     def __init__(self, params) -> None:
@@ -46,59 +46,54 @@ class FRPalletize(object):
 
             参数:
                 box_point: 托盘坐标系下工件的位置[x, y, z]
+                first_corner: 机器人运动起始方位
+                move_direction: 机器人移动方向
+                p_path: 机器人坐标系下,示教得到的平面路径点,用于确定托盘坐标系的X或Y轴
+                p_pathz: 机器人坐标系下,示教得到的法向路径点,用于确定托盘坐标系的Z轴
                 p_pallet_origin: 机器人坐标系下,示教得到的托盘坐标系原点坐标
                 p_suction_point: 机器人坐标系下,示教得到的吸盘在工件上的吸附位置,通常和工件几何中心重合
+                appr_offset: 目标渐近点偏移量,使机器人从无遮挡物的方向向目标靠近
 
             返回:
                 target_point: 机器人坐标系下,机器人的运动目标点
         """
-        (x, y, z) = box_point
 
-        tran_tcp_ppo_to_robot = self.euler_to_homomat(p_pallet_origin)  # 原点和第一个箱子几何中心重合,ppo=p_pallet_origin
+        (x, y, z) = box_point
+        tran_tcp_ppo_to_robot = self.euler_to_homomat(p_pallet_origin)  # ppo=p_pallet_origin
         tran_tcp_psp_to_robot = self.euler_to_homomat(p_suction_point) # psp=p_suction_point
         tran_tcp_path_to_robot = self.euler_to_homomat(p_path)
         tran_tcp_pathz_to_robot = self.euler_to_homomat(p_pathz)
         
+        # 根据路径点确定托盘坐标系
         z_pallet_to_robot = tran_tcp_pathz_to_robot[:3,3] - tran_tcp_path_to_robot[:3,3]
-        if first_corner == [0,0]:
-            if move_direction == 'X':
+        if move_direction == 'X':
+            if first_corner[0] == 0:
                 x_pallet_to_robot = tran_tcp_path_to_robot[:3,3] - tran_tcp_ppo_to_robot[:3,3]
-                y_pallet_to_robot = np.cross(z_pallet_to_robot, x_pallet_to_robot)
-            elif move_direction == 'Y':
-                y_pallet_to_robot = tran_tcp_path_to_robot[:3,3] - tran_tcp_ppo_to_robot[:3,3]
-                x_pallet_to_robot = np.cross(y_pallet_to_robot, z_pallet_to_robot)
-            
-        elif first_corner == [0,1]:
-            if move_direction == 'X':
-                x_pallet_to_robot = tran_tcp_path_to_robot[:3,3] - tran_tcp_ppo_to_robot[:3,3]
-                y_pallet_to_robot = np.cross(z_pallet_to_robot, x_pallet_to_robot)
-            elif move_direction == 'Y':
-                y_pallet_to_robot = -(tran_tcp_path_to_robot[:3,3] - tran_tcp_ppo_to_robot[:3,3])
-                x_pallet_to_robot = np.cross(y_pallet_to_robot, z_pallet_to_robot)
-
-        elif first_corner == [1,0]:
-            if move_direction == 'X':
+            elif first_corner[0] == 1:
                 x_pallet_to_robot = -(tran_tcp_path_to_robot[:3,3] - tran_tcp_ppo_to_robot[:3,3])
-                y_pallet_to_robot = np.cross(z_pallet_to_robot, x_pallet_to_robot)
-            elif move_direction == 'Y':
+            else:
+                raise ValueError("[参数错误]无效的起始方位,必须是[0,0]、[0,1]、[1,0]或[1,1]")
+            y_pallet_to_robot = np.cross(z_pallet_to_robot, x_pallet_to_robot)
+        elif move_direction == 'Y':
+            if first_corner[1] == 0:
                 y_pallet_to_robot = tran_tcp_path_to_robot[:3,3] - tran_tcp_ppo_to_robot[:3,3]
-                x_pallet_to_robot = np.cross(y_pallet_to_robot, z_pallet_to_robot)
-                
-        elif first_corner == [1,1]:
-            if move_direction == 'X':
-                x_pallet_to_robot = -(tran_tcp_path_to_robot[:3,3] - tran_tcp_ppo_to_robot[:3,3])
-                y_pallet_to_robot = np.cross(z_pallet_to_robot, x_pallet_to_robot)
-            elif move_direction == 'Y':
+            elif first_corner[1] == 1:
                 y_pallet_to_robot = -(tran_tcp_path_to_robot[:3,3] - tran_tcp_ppo_to_robot[:3,3])
-                x_pallet_to_robot = np.cross(y_pallet_to_robot, z_pallet_to_robot)
+            else:
+                raise ValueError("[参数错误]无效的起始方位,必须是[0,0]、[0,1]、[1,0]或[1,1]")
+            x_pallet_to_robot = np.cross(y_pallet_to_robot, z_pallet_to_robot)
+        else:
+            raise ValueError("[参数错误]无效的移动方向,必须是'X'或'Y'")
         
         tran_pallet_to_robot_rotmat = np.vstack([rm.unit_vector(x_pallet_to_robot), 
                                                 rm.unit_vector(y_pallet_to_robot), 
                                                 rm.unit_vector(z_pallet_to_robot)]).T
         tran_pallet_to_robot = rm.homomat_from_posrot(pos=tran_tcp_ppo_to_robot[:3,3], 
                                                       rot=tran_pallet_to_robot_rotmat)
+        
+        # 进行必要的坐标变换
         tran_pallet_to_tcp = rm.homomat_from_posrot(pos=np.zeros(3),
-                                                    rot=np.linalg.inv(tran_tcp_ppo_to_robot[:3,:3]) @ tran_pallet_to_robot_rotmat)
+                                rot=np.linalg.inv(tran_tcp_ppo_to_robot[:3,:3]) @ tran_pallet_to_robot_rotmat)
         tran_suction_to_tcp = tran_pallet_to_tcp
         tran_suction_to_robot = tran_tcp_psp_to_robot @ tran_suction_to_tcp
         tran_suction_to_box = rm.homomat_from_posrot(
@@ -108,20 +103,16 @@ class FRPalletize(object):
         # 目标点计算
         tran_box_to_pallet = self.euler_to_homomat([x, y, z, 0., 0., 0.])
         tran_suctionbox_to_robot = tran_pallet_to_robot @ (tran_box_to_pallet @ tran_suction_to_box)
-        tran_tcp_to_robot_target = tran_suctionbox_to_robot @ rm.homomat_inverse(tran_suction_to_tcp)
-        target_point = self.euler_from_homomat(tran_tcp_to_robot_target)
+        tran_tcp_target_to_robot = tran_suctionbox_to_robot @ rm.homomat_inverse(tran_suction_to_tcp)
+        target_point = self.euler_from_homomat(tran_tcp_target_to_robot)
+
         # 目标渐近点计算
-        if first_corner == [0, 0]:
-            tran_boxappr_to_pallet = self.euler_to_homomat([x+appr_offset[0], y+appr_offset[1], z+appr_offset[2], 0., 0., 0.])
-        elif first_corner == [0, 1]:
-            tran_boxappr_to_pallet = self.euler_to_homomat([x+appr_offset[0], y-appr_offset[1], z+appr_offset[2], 0., 0., 0.])
-        elif first_corner == [1, 0]:
-            tran_boxappr_to_pallet = self.euler_to_homomat([x-appr_offset[0], y+appr_offset[1], z+appr_offset[2], 0., 0., 0.])
-        elif first_corner == [1, 1]:
-            tran_boxappr_to_pallet = self.euler_to_homomat([x-appr_offset[0], y-appr_offset[1], z+appr_offset[2], 0., 0., 0.])
+        appr_offset_x = appr_offset[0] if first_corner[0] == 0 else -appr_offset[0]
+        appr_offset_y = appr_offset[1] if first_corner[1] == 0 else -appr_offset[1]
+        tran_boxappr_to_pallet = self.euler_to_homomat([x+appr_offset_x, y+appr_offset_y, z+appr_offset[2], 0., 0., 0.])
         tran_suctionappr_to_robot = tran_pallet_to_robot @ (tran_boxappr_to_pallet @ tran_suction_to_box)
-        tran_tcp_to_robot_targetappr = tran_suctionappr_to_robot @ rm.homomat_inverse(tran_suction_to_tcp)
-        target_appr_point = self.euler_from_homomat(tran_tcp_to_robot_targetappr)
+        tran_tcp_targetappr_to_robot = tran_suctionappr_to_robot @ rm.homomat_inverse(tran_suction_to_tcp)
+        target_appr_point = self.euler_from_homomat(tran_tcp_targetappr_to_robot)
 
         return target_point, target_appr_point
 
@@ -135,7 +126,7 @@ class FRPalletize(object):
         elif motion_type == 'line':
             robot.MoveL(point, target_flag='desc',vel=vel)
         else:
-            raise ValueError("无效的运动方式,必须是'ptp'或'line'")
+            raise ValueError("[参数错误]无效的运动方式,必须是'ptp'或'line'")
 
 
     def execute_palletize(self, suction=True):
@@ -161,7 +152,7 @@ class FRPalletize(object):
         # 机械臂移动参数
         p_home = self.params['机器人移动配置']['作业原点']
         p_prepare = self.params['机器人移动配置']['作业准备点']
-        p_trans = self.params['机器人移动配置']['工位过渡点']
+        p_mid = self.params['机器人移动配置']['工位过渡点']
         p_pallet_origin = self.params['机器人移动配置']['托盘原点']
         p_path = self.params['机器人移动配置']['平面路径点']
         p_pathz = self.params['机器人移动配置']['法向路径点']
@@ -172,9 +163,9 @@ class FRPalletize(object):
         work_direction = self.params['机器人移动配置']['堆叠方式']
         
         # 数据预检查
-        if (nrow*box_width > pallet_width):
+        if (nrow*(box_width+box_interval)-box_interval > pallet_width):
             raise ValueError("[Warning] 工件超出托盘侧边范围!")
-        if (ncol*box_length > pallet_length):
+        if (ncol*(box_length+box_interval)-box_interval > pallet_length):
             raise ValueError("[Warning] 工件超出托盘前边范围!")
 
         # 计算工件在托盘上的访问位置和顺序
@@ -209,7 +200,7 @@ class FRPalletize(object):
                             else:
                                 start_col, end_col, step_col = ncol-1, -1, -1
                         else:
-                            raise ValueError("无效的运动路径,必须是'headtail'或'zigzag'")
+                            raise ValueError("[参数错误]无效的运动路径,必须是'headtail'或'zigzag'")
                         for col in range(start_col, end_col, step_col):
                             y = col * (box_length + box_interval)
                             box_points.append((x,y,z))
@@ -224,12 +215,12 @@ class FRPalletize(object):
                             else:
                                 start_row, end_row, step_row = nrow-1, -1, -1
                         else:
-                            raise ValueError("无效的运动路径,必须是'headtail'或'zigzag'")
+                            raise ValueError("[参数错误]无效的运动路径,必须是'headtail'或'zigzag'")
                         for row in range(start_row, end_row, step_row):
                             x = row * (box_width + box_interval)
                             box_points.append((x,y,z))
                 else:
-                    raise ValueError("无效的移动方向,必须是'X'或'Y'")
+                    raise ValueError("[参数错误]无效的移动方向,必须是'X'或'Y'")
 
             elif first_corner == [0,1]:
                 if move_direction == 'Y':
@@ -243,7 +234,7 @@ class FRPalletize(object):
                             else:
                                 start_col, end_col, step_col = -ncol+1, 1, 1
                         else:
-                            raise ValueError("无效的运动路径,必须是'headtail'或'zigzag'")
+                            raise ValueError("[参数错误]无效的运动路径,必须是'headtail'或'zigzag'")
                         for col in range(start_col, end_col, step_col):
                             y = col * (box_length + box_interval)
                             box_points.append((x,y,z))
@@ -258,12 +249,12 @@ class FRPalletize(object):
                             else:
                                 start_row, end_row, step_row = nrow-1, -1, -1
                         else:
-                            raise ValueError("无效的运动路径,必须是'headtail'或'zigzag'")
+                            raise ValueError("[参数错误]无效的运动路径,必须是'headtail'或'zigzag'")
                         for row in range(start_row, end_row, step_row):
                             x = row * (box_width + box_interval)
                             box_points.append((x,y,z))
                 else:
-                    raise ValueError("无效的移动方向,必须是'X'或'Y'")
+                    raise ValueError("[参数错误]无效的移动方向,必须是'X'或'Y'")
 
             elif first_corner == [1,0]:
                 if move_direction == 'Y':
@@ -277,7 +268,7 @@ class FRPalletize(object):
                             else:
                                 start_col, end_col, step_col = ncol-1, -1, -1
                         else:
-                            raise ValueError("无效的运动路径,必须是'headtail'或'zigzag'")
+                            raise ValueError("[参数错误]无效的运动路径,必须是'headtail'或'zigzag'")
                         for col in range(start_col, end_col, step_col):
                             y = col * (box_length + box_interval)
                             box_points.append((x,y,z))
@@ -292,12 +283,12 @@ class FRPalletize(object):
                             else:
                                 start_row, end_row, step_row = -nrow+1, 1, 1
                         else:
-                            raise ValueError("无效的运动路径,必须是'headtail'或'zigzag'")
+                            raise ValueError("[参数错误]无效的运动路径,必须是'headtail'或'zigzag'")
                         for row in range(start_row, end_row, step_row):
                             x = row * (box_width + box_interval)
                             box_points.append((x,y,z))
                 else:
-                    raise ValueError("无效的移动方向,必须是'X'或'Y'")
+                    raise ValueError("[参数错误]无效的移动方向,必须是'X'或'Y'")
 
             elif first_corner == [1,1]:
                 if move_direction == 'Y':
@@ -311,7 +302,7 @@ class FRPalletize(object):
                             else:
                                 start_col, end_col, step_col = -ncol+1, 1, 1
                         else:
-                            raise ValueError("无效的运动路径,必须是'headtail'或'zigzag'")
+                            raise ValueError("[参数错误]无效的运动路径,必须是'headtail'或'zigzag'")
                         for col in range(start_col, end_col, step_col):
                             y = col * (box_length + box_interval)
                             box_points.append((x,y,z))
@@ -326,15 +317,15 @@ class FRPalletize(object):
                             else:
                                 start_row, end_row, step_row = -nrow+1, 1, 1
                         else:
-                            raise ValueError("无效的运动路径,必须是'headtail'或'zigzag'")
+                            raise ValueError("[参数错误]无效的运动路径,必须是'headtail'或'zigzag'")
                         for row in range(start_row, end_row, step_row):
                             x = row * (box_width + box_interval)
                             box_points.append((x,y,z))
                 else:
-                    raise ValueError("无效的移动方向,必须是'X'或'Y'")
+                    raise ValueError("[参数错误]无效的移动方向,必须是'X'或'Y'")
             
             else:
-                raise ValueError("无效的起始方位,必须是[0,0]、[0,1]、[1,0]或[1,1]")
+                raise ValueError("[参数错误]无效的起始方位,必须是[0,0]、[0,1]、[1,0]或[1,1]")
         
         # 选择堆叠方式: 码垛--load / 卸垛--unload
         if work_direction == 'load':
@@ -342,20 +333,22 @@ class FRPalletize(object):
             for index, box_point in enumerate(box_points):
                 pallet_origin = copy.deepcopy(p_pallet_origin)
                 suction_point = copy.deepcopy(p_suction_point)
-                trans_point = copy.deepcopy(p_trans)
+                mid_point = copy.deepcopy(p_mid)
                 path_point = copy.deepcopy(p_path)
                 path_pointz = copy.deepcopy(p_pathz)
-                p_trans_zoffset = index//(nrow*ncol)*box_height
-                trans_point[2] += p_trans_zoffset
-                target_point, target_appr_point = self.get_target_point(box_point, 
+                index_layer = index//(nrow*ncol)
+                index_box = index%(nrow*ncol)
+                mid_point[2] += index_layer*box_height
+                target_point, target_appr_point = self.get_target_point(
+                                                    box_point, 
                                                     first_corner, 
                                                     move_direction,
                                                     p_path=path_point,
                                                     p_pathz=path_pointz,
                                                     p_pallet_origin=pallet_origin, 
                                                     p_suction_point=suction_point) 
-                print(f"托盘坐标系下第{index+1}个工件位置: {box_point}")
-                print(f"机器人坐标系下目标点: {target_point}")
+                print(f"[运行状态]托盘坐标系下第{index_layer+1}/{nlayer}层,第{index_box+1}/{nrow*ncol}个工件位置: {box_point}")
+                print(f"[运行状态]机器人坐标系下目标点: {target_point}")
                 
                 # 机械臂移动到作业准备点
                 self.robot_motion(self.rbt, p_prepare, motion_type=motion, vel=100.0)
@@ -369,7 +362,7 @@ class FRPalletize(object):
                 # 机械臂移动到作业准备点
                 self.robot_motion(self.rbt, p_prepare, motion_type=motion, vel=100.0)
                 # 机械臂移动到工位过渡点
-                self.robot_motion(self.rbt, trans_point, motion_type=motion, vel=100.0)
+                self.robot_motion(self.rbt, mid_point, motion_type=motion, vel=100.0)
                 # 移动机器人到目标渐近点
                 self.robot_motion(self.rbt, target_appr_point, motion_type=motion, vel=100.0)
                 # 移动机器人到目标点
@@ -382,7 +375,7 @@ class FRPalletize(object):
                 # 移动机器人到目标渐近点
                 self.robot_motion(self.rbt, target_appr_point, motion_type=motion, vel=10.0)
                 # 机械臂移动到工位过渡点
-                self.robot_motion(self.rbt, trans_point, motion_type=motion, vel=100.0)
+                self.robot_motion(self.rbt, mid_point, motion_type=motion, vel=100.0)
                 # 机械臂移动到作业准备点
                 self.robot_motion(self.rbt, p_prepare, motion_type=motion, vel=100.0)
         
@@ -391,26 +384,28 @@ class FRPalletize(object):
             for index, box_point in enumerate(box_points[::-1]):
                 pallet_origin = copy.deepcopy(p_pallet_origin)
                 suction_point = copy.deepcopy(p_suction_point)
-                trans_point = copy.deepcopy(p_trans)
+                mid_point = copy.deepcopy(p_mid)
                 path_point = copy.deepcopy(p_path)
                 path_pointz = copy.deepcopy(p_pathz)
                 home_point = copy.deepcopy(p_home)
-                p_trans_zoffset = (nlayer - 1 - index//(nrow*ncol))*box_height
-                trans_point[2] += p_trans_zoffset
-                target_point, target_appr_point = self.get_target_point(box_point, 
+                index_layer = (nlayer - 1 - index//(nrow*ncol))
+                index_box = index%(nrow*ncol)
+                mid_point[2] += index_layer*box_height
+                target_point, target_appr_point = self.get_target_point(
+                                                    box_point, 
                                                     first_corner, 
                                                     move_direction,
                                                     p_path=path_point,
                                                     p_pathz=path_pointz,
                                                     p_pallet_origin=pallet_origin, 
                                                     p_suction_point=suction_point) 
-                print(f"托盘坐标系下第{index+1}个工件位置: {box_point}")
-                print(f"机器人坐标系下目标点: {target_point}")
+                print(f"[运行状态]托盘坐标系下{index_layer+1}/{nlayer}层,第{index_box+1}/{nrow*ncol}个工件位置: {box_point}")
+                print(f"[运行状态]机器人坐标系下目标点: {target_point}")
                 
                 # 机械臂移动到作业准备点
                 self.robot_motion(self.rbt, p_prepare, motion_type=motion, vel=100.0)
                 # 机械臂移动到工位过渡点
-                self.robot_motion(self.rbt, trans_point, motion_type=motion, vel=100.0)
+                self.robot_motion(self.rbt, mid_point, motion_type=motion, vel=100.0)
                 # 移动机器人到目标渐近点 
                 self.robot_motion(self.rbt, target_appr_point, motion_type=motion, vel=100.0)
                 # 移动机器人到目标点
@@ -424,7 +419,7 @@ class FRPalletize(object):
                 # 移动机器人到目标渐近点
                 self.robot_motion(self.rbt, target_appr_point, motion_type=motion, vel=10.0)
                 # 机械臂移动到工位过渡点
-                self.robot_motion(self.rbt, trans_point, motion_type=motion, vel=100.0)
+                self.robot_motion(self.rbt, mid_point, motion_type=motion, vel=100.0)
                 # 机械臂移动到作业准备点
                 self.robot_motion(self.rbt, p_prepare, motion_type=motion, vel=100.0)
                 # 机械臂移动到作业原点
@@ -439,4 +434,4 @@ class FRPalletize(object):
                 self.robot_motion(self.rbt, p_prepare, motion_type=motion, vel=100.0)
                 
         else:
-            raise ValueError("无效的堆叠方式,必须是'load'或'unload'")
+            raise ValueError("[参数错误]无效的堆叠方式,必须是'load'或'unload'")
