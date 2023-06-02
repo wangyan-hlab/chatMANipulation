@@ -1,5 +1,8 @@
+import re
+import os
 import copy
-from frchat.gui import *
+import tkinter as tk
+from frchat.gui import FRChatGUI
 from frchat.bot_palletize import FRChatBotPalletize
 from frchat.init_prompt_palletize import MSG_PALLETIZE_INTRO, WELCOME_TEXT
 
@@ -12,9 +15,9 @@ class FRChatGUIPalletize(FRChatGUI):
         Data: 2023/05/23
     """
     
-    def __init__(self, title, width=1024, height=768, font=('Times New Roman', 10)) -> None:
+    def __init__(self, title, width=1024, height=768, font=('Times New Roman', 10), robot_connect=False) -> None:
         super().__init__(title, width, height, font)
-        self.bot = FRChatBotPalletize(messages=MSG_PALLETIZE_INTRO,temperature=0.1)
+        self.bot = FRChatBotPalletize(messages=MSG_PALLETIZE_INTRO,temperature=0.0)
         self.init_prompt =  copy.deepcopy(MSG_PALLETIZE_INTRO)
         # 文件保存相关
         self.yaml_name = None
@@ -31,9 +34,14 @@ class FRChatGUIPalletize(FRChatGUI):
         self.ncol = 2
         self.first_corner = [0, 0]
         self.move_direction = None
+        self.move_pattern = None
         self.canvas = None
         self.frame_canvas = None
-        self.scale_factor = 5
+        self.scale_factor = 300
+        self.robot_connect = robot_connect
+        if robot_connect:
+            from frmovewrapper.frmove import FRCobot
+            self.frrbt = FRCobot()
 
 
     def create_gui(self):
@@ -115,11 +123,11 @@ class FRChatGUIPalletize(FRChatGUI):
         ### 图形绘制比例尺
         frame_scalebar = tk.Frame(root)
         frame_scalebar.pack(side="right", fill="both", expand=False, padx=5, pady=5)
-        scalebar = tk.Scale(root, from_=1, to=10, 
+        scalebar = tk.Scale(root, from_=1, to=500, 
                          orient="vertical", 
                          command=self.update_scale_factor, 
                          sliderlength=10, length=100, width=10)
-        scalebar.set(5)  # 默认初始值为
+        scalebar.set(300)  # 默认初始值为
         scalebar.pack(side="top", padx=5, pady=5)
 
         ## 让文本框适应窗口大小
@@ -140,7 +148,7 @@ class FRChatGUIPalletize(FRChatGUI):
         ### 创建一个空菜单，用于添加文件选项
         menubar = tk.Menu(root) 
         filemenu = tk.Menu(menubar, tearoff=0)
-        menubar.add_cascade(label="配置文件", menu=filemenu)
+        menubar.add_cascade(label="配置文件", menu=filemenu, font=font)
         ### 将 “打开” 选项添加到菜单中
         filemenu.add_command(label="打开", command=self.open_file)
         ### 将单栏添加到主窗口中
@@ -154,9 +162,31 @@ class FRChatGUIPalletize(FRChatGUI):
         return text_input_history, text_input, text_output
 
 
-    def match_pattern(self, robot_connect=False):
-        
-        prompt = self.input_content
+    def match_prompt_pattern(self, *args):
+
+        # TODO: 测试功能
+        # 在用户输入“获取当前tcp位姿”后,调用GetTCPPose()函数获取末端位姿,并将结果粘贴到输入框中
+        prompt = self.text_input.get("1.0", "end")
+        get_pose_pattern = re.compile(r"获取当前([\s\S]*?)位姿")
+        get_pose = get_pose_pattern.findall(prompt)
+
+        if get_pose:
+            if get_pose[0] == "tcp":
+                if self.robot_connect:
+                    tcp_pose = self.frrbt.GetTCPPose()
+                    for index, data in enumerate(tcp_pose):
+                        tcp_pose[index] = round(data, 3)
+                    self.text_input.insert("end", f"\n{str(tcp_pose)}")
+                else:
+                    self.text_input.insert("end", f"\n[INFO] 请连接机器人以获取数据\n")
+            else:
+                raise ValueError("无效的获取目标")
+        else:
+            pass
+
+
+    def match_response_pattern(self):
+
         response = self.output_content
 
         # 匹配yaml相关内容
@@ -213,11 +243,15 @@ class FRChatGUIPalletize(FRChatGUI):
         move_direction = move_direction_match.findall(response)
         if move_direction:
             self.move_direction = move_direction[-1]
+        move_pattern_match = re.compile(r"运动路径: ([\s\S]*?)\n")
+        move_pattern = move_pattern_match.findall(response)
+        if move_pattern:
+            self.move_pattern = move_pattern[-1]
         first_corner_match = re.compile(r"起始方位: ([\s\S]*?)\n")
         first_corner = first_corner_match.findall(response)
         if first_corner:
             self.first_corner = eval(first_corner[-1])
-        print(f"[INFO] 图形绘制参数:\n工件长度:{self.box_length}, 工件宽度:{self.box_width}, 托盘前边长度:{self.pallet_length}, 托盘侧边长度:{self.pallet_width}, 工件间隔:{self.box_interval}, 每层行数:{self.nrow}, 每层列数:{self.ncol}, 移动方向:{self.move_direction}, 起始方位:{self.first_corner}")
+        print(f"[INFO] 图形绘制参数:\n工件长度:{self.box_length}, 工件宽度:{self.box_width}, 托盘前边长度:{self.pallet_length}, 托盘侧边长度:{self.pallet_width}, 工件间隔:{self.box_interval}, 每层行数:{self.nrow}, 每层列数:{self.ncol}, 起始方位:{self.first_corner}, 移动方向:{self.move_direction}, 运动路径:{self.move_pattern}")
 
         # 匹配python相关内容
         python_name_pattern = re.compile(r"palletize_([\s\S]*?)\.py")
@@ -244,6 +278,7 @@ class FRChatGUIPalletize(FRChatGUI):
         self.root.bind("<Control-Key-s>", self.process_message)
         self.root.bind("<Control-Key-s>", self.draw_rectangle, add="+")
         self.root.bind("<Control-Key-r>", self.reinit_prompt)
+        self.root.bind("<Control-Key-e>", self.match_prompt_pattern)
         ## 开始事件循环
         self.root.mainloop()
 
@@ -253,7 +288,7 @@ class FRChatGUIPalletize(FRChatGUI):
             重新初始化prompt
         """
         self.bot.messages.clear()
-        self.bot.messages = self.init_prompt
+        self.bot.messages = copy.deepcopy(self.init_prompt)
         print("[Reinit] bot_messages", self.bot.messages)
 
 
@@ -270,19 +305,17 @@ class FRChatGUIPalletize(FRChatGUI):
             根据参数配置绘制图形
         """
         # 缩放矩形的长度、宽度和摆放间隔
-        scaled_box_length = self.box_length * self.scale_factor
-        scaled_box_width = self.box_width * self.scale_factor
-        scaled_box_interval = self.box_interval * self.scale_factor
-        # print(f"[INFO] 当前缩放系数: {self.scale_factor}")
+        scaled_box_length = self.box_length * self.scale_factor*0.01
+        scaled_box_width = self.box_width * self.scale_factor*0.01
+        scaled_box_interval = self.box_interval * self.scale_factor*0.01
+        # print(f"[INFO] 当前缩放系数(%): {self.scale_factor}")
         # print(f"[INFO] 缩放后的图形绘制参数: {scaled_box_length}, {scaled_box_width}, {scaled_box_interval}")
-        scaled_pallet_length = self.pallet_length * self.scale_factor
-        scaled_pallet_width = self.pallet_width * self.scale_factor
+        scaled_pallet_length = self.pallet_length * self.scale_factor*0.01
+        scaled_pallet_width = self.pallet_width * self.scale_factor*0.01
 
         if any([scaled_box_length, scaled_box_width, scaled_box_interval, scaled_pallet_length, scaled_pallet_width]) == 0:
             print("[IGNORE] 存在无效的图形参数")
             return
-        else:
-            print("[INFO] 获取到图形参数,准备绘制图形")
 
         self.canvas.delete("rectangle")
         self.canvas.delete("pallet_origin")
@@ -301,40 +334,106 @@ class FRChatGUIPalletize(FRChatGUI):
 
         for row in range(self.nrow):
             for col in range(self.ncol):
-                x1 = 10 + (scaled_box_length + scaled_box_interval) * col
-                y1 = 10 + (scaled_box_width + scaled_box_interval) * row
-                x2 = x1 + scaled_box_length
-                y2 = y1 + scaled_box_width
+                if self.first_corner == [0,0]:
+                    x1 = 10 + (scaled_box_length + scaled_box_interval) * col
+                    y1 = 10 + (scaled_box_width + scaled_box_interval) * row
+                    x2 = x1 + scaled_box_length
+                    y2 = y1 + scaled_box_width
+                elif self.first_corner == [0,1]:
+                    x1 = 10+scaled_pallet_length-scaled_box_length - (scaled_box_length + scaled_box_interval) * col
+                    y1 = 10 + (scaled_box_width + scaled_box_interval) * row
+                    x2 = x1 + scaled_box_length
+                    y2 = y1 + scaled_box_width
+                elif self.first_corner == [1,0]:
+                    x1 = 10 + (scaled_box_length + scaled_box_interval) * col
+                    y1 = 10+scaled_pallet_width-scaled_box_width - (scaled_box_width + scaled_box_interval) * row
+                    x2 = x1 + scaled_box_length
+                    y2 = y1 + scaled_box_width
+                elif self.first_corner == [1,1]:
+                    x1 = 10+scaled_pallet_length-scaled_box_length - (scaled_box_length + scaled_box_interval) * col
+                    y1 = 10+scaled_pallet_width-scaled_box_width - (scaled_box_width + scaled_box_interval) * row
+                    x2 = x1 + scaled_box_length
+                    y2 = y1 + scaled_box_width
                 
-                if row==first_corner_row and col==first_corner_col:
+                if [row, col] == [0, 0]:
                     self.canvas.create_rectangle(x1, y1, x2, y2, fill="white", tags="rectangle")
                 else:
-                    self.canvas.create_rectangle(x1, y1, x2, y2, fill="black", tags="rectangle")
+                    self.canvas.create_rectangle(x1, y1, x2, y2, fill="cyan", tags="rectangle")
+
         
         # 绘制其他元素
         ## 绘制原点
-        pallet_origin_x = scaled_box_length/2 + (10 + (scaled_box_length + scaled_box_interval) * first_corner_col)
-        pallet_origin_y = scaled_box_width/2 + (10 + (scaled_box_width + scaled_box_interval) * first_corner_row)
+        if first_corner_col == 0:
+            pallet_origin_x = scaled_box_length/2 + 10
+        else:
+            pallet_origin_x = scaled_box_length/2 + (10+scaled_pallet_length-scaled_box_length)
+        
+        if first_corner_row == 0:
+            pallet_origin_y = scaled_box_width/2 + 10
+        else:
+            pallet_origin_y = scaled_box_width/2 + (10+scaled_pallet_width-scaled_box_width)
+
         circle_x1 = pallet_origin_x - 5
         circle_x2 = pallet_origin_x + 5
         circle_y1 = pallet_origin_y - 5
         circle_y2 = pallet_origin_y + 5
         self.canvas.create_oval(circle_x1, circle_y1, circle_x2, circle_y2, fill="yellow", tags="pallet_origin")
+        
         ## 绘制移动方向
         if self.move_direction == 'Y':
             yarrow_x1, yarrow_y1 = pallet_origin_x, pallet_origin_y
             if first_corner_col == 0:
-                yarrow_x2, yarrow_y2 = pallet_origin_x+20, pallet_origin_y
+                yarrow_x2, yarrow_y2 = pallet_origin_x + \
+                    (scaled_box_length+scaled_box_interval)*(self.ncol-1), pallet_origin_y
             else:
-                yarrow_x2, yarrow_y2 = pallet_origin_x-20, pallet_origin_y
-            self.canvas.create_line(yarrow_x1, yarrow_y1, yarrow_x2, yarrow_y2, arrow="last", width=3, fill="green",tags="pallet_yarrow")
+                yarrow_x2, yarrow_y2 = pallet_origin_x - \
+                    (scaled_box_length+scaled_box_interval)*(self.ncol-1), pallet_origin_y
+            
+            for i in range(3):
+                if first_corner_row == 0:
+                    offset = i * (scaled_box_width + scaled_box_interval)
+                else:
+                    offset = -i * (scaled_box_width + scaled_box_interval)
+                if self.move_pattern == 'headtail':
+                    self.canvas.create_line(yarrow_x1, yarrow_y1+offset, yarrow_x2, yarrow_y2+offset, 
+                                        arrow="last", width=3, fill="green",tags="pallet_yarrow")
+                elif self.move_pattern == 'zigzag':
+                    if i % 2 == 1:
+                        self.canvas.create_line(yarrow_x2, yarrow_y2+offset, yarrow_x1, yarrow_y1+offset, 
+                                        arrow="last", width=3, fill="green",tags="pallet_yarrow")
+                    else:
+                        self.canvas.create_line(yarrow_x1, yarrow_y1+offset, yarrow_x2, yarrow_y2+offset, 
+                                        arrow="last", width=3, fill="green",tags="pallet_yarrow")
+                else:
+                    raise ValueError("无效的运动路径")
+        
         elif self.move_direction == 'X':
             xarrow_x1, xarrow_y1 = pallet_origin_x, pallet_origin_y
             if first_corner_row == 0:
-                xarrow_x2, xarrow_y2 = pallet_origin_x, pallet_origin_y+20
+                xarrow_x2, xarrow_y2 = pallet_origin_x, pallet_origin_y + \
+                    (scaled_box_width+scaled_box_interval)*(self.nrow-1)
             else:
-                xarrow_x2, xarrow_y2 = pallet_origin_x, pallet_origin_y-20
-            self.canvas.create_line(xarrow_x1, xarrow_y1, xarrow_x2, xarrow_y2, arrow="last", width=3, fill="red",tags="pallet_xarrow")
+                xarrow_x2, xarrow_y2 = pallet_origin_x, pallet_origin_y - \
+                    (scaled_box_width+scaled_box_interval)*(self.nrow-1)
+                
+            for i in range(3):
+                if first_corner_col == 0:
+                    offset = i * (scaled_box_length + scaled_box_interval)
+                else:
+                    offset = -i * (scaled_box_length + scaled_box_interval)
+                if self.move_pattern == 'headtail':
+                    self.canvas.create_line(xarrow_x1+offset, xarrow_y1, xarrow_x2+offset, xarrow_y2, 
+                                            arrow="last", width=3, fill="red",tags="pallet_xarrow")
+                elif self.move_pattern == 'zigzag':
+                    if i % 2 == 1:
+                        self.canvas.create_line(xarrow_x2+offset, xarrow_y2, xarrow_x1+offset, xarrow_y1, 
+                                            arrow="last", width=3, fill="red",tags="pallet_xarrow")
+                    else:
+                        self.canvas.create_line(xarrow_x1+offset, xarrow_y1, xarrow_x2+offset, xarrow_y2, 
+                                            arrow="last", width=3, fill="red",tags="pallet_xarrow")
+                else:
+                    raise ValueError("无效的运动路径")
+
         elif not self.move_direction:
             yarrow_x1, yarrow_y1 = pallet_origin_x, pallet_origin_y
             yarrow_x2, yarrow_y2 = pallet_origin_x+20, pallet_origin_y

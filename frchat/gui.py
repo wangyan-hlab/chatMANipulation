@@ -1,5 +1,4 @@
 import re
-import os
 import tkinter as tk
 from tkinter import filedialog
 import datetime
@@ -144,6 +143,7 @@ class FRChatGUI(object):
             处理用户输入并返回消息
         """
         self.input_content = self.text_input.get("1.0", "end")
+        self.match_prompt_pattern()
         if self.input_content:            
             self.text_input.delete("1.0", "end")
             self.save_input_history(self.input_content)
@@ -151,13 +151,16 @@ class FRChatGUI(object):
             now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             self.output_content = self.bot.chat(self.input_content)
 
-            self.match_pattern()
+            self.match_response_pattern()
             self.text_output.configure(state="normal")
             self.text_output.insert("end", f"\n-----{now}-----\n{self.output_content}\n")
             self.text_output.configure(state="disabled")
             self.text_output.see('end')
 
-    def match_pattern(self, robot_connect=False):
+    def match_prompt_pattern(self):
+        pass
+    
+    def match_response_pattern(self):
         """
             Matching certain patterns in the response, e.g.: yaml, python, etc.
         """
