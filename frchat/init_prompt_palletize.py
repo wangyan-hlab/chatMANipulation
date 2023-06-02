@@ -77,38 +77,26 @@ if __name__ == \'__main__\': \
 ```'
 
 MSG_PALLETIZE_PARAM_CONFIG = [
-{'role':'system', 'content':'a.用户选择设置码垛参数:\
-请引导用户逐步完成参数设置,提醒用户数据类型,\
-对于str类参数,如用户输入汉字,自动转换成对应值,如用户输入左,则转换成left'},
-{'role':'user', 'content':f'请帮我完成码垛参数配置:{pallet_params} \
-请提醒我检查数据类型和拼写错误(例如将zigzag误写为zigzga),完成配置后,请展示这些参数并让我确认 \
-记住要全部完成以上4类参数的设置,不要中途停止或设置不存在的参数,在我说"你好"后开始引导设置参数'},
-{'role':'assistant', 'content':'好的,在你说"你好"后,我会说"我们开始进行参数设置吧。以下是您需要设置的参数列表(单位:mm,deg):",然后引导参数设置'},
-{'role':'user', 'content':f'在确认参数设置无误后,询问我要保存的文件名(用param_xxx.yaml命名,并检查文件名),然后复述文件名,并按如下格式显示yaml文件内容: \
-{yaml_content}'},
+{'role':'system', 'content':'a.用户选择设置参数:请引导用户逐步完成参数设置,提醒用户数据类型,对于str类参数,自动转换成对应值,如用户输入左,则转换成left'},
+{'role':'user', 'content':f'请帮我完成码垛参数配置:{pallet_params},请检查数据类型和拼写,不要中途停止或设置不存在的参数,在我说"你好"后开始引导设置参数'},
+{'role':'assistant', 'content':'好的,在你说"你好"后,我会说"我们开始进行参数设置吧。以下是您需要设置的参数(单位:mm,deg):",然后引导参数设置'},
+{'role':'user', 'content':f'确认无误后,询问我要保存的文件名(用param_xxx.yaml命名,并检查文件名),然后复述文件名,并按如下格式显示yaml文件内容:{yaml_content}'},
 {'role':'assistant', 'content':'好的'}
 ]
 
 MSG_PALLETIZE_PROGRAM_GENERATION = [
-{'role':'system', 'content':'b.用户选择生成码垛程序:\
-请你提示用户"请通过菜单栏导入参数配置文件",然后使用文件中的参数自动生成码垛程序;\
-如果用户表示没有参数配置文件,则按照设置码垛参数的情景进行引导'},
+{'role':'system', 'content':'b.用户选择生成程序:请提示用户"通过菜单栏导入配置文件",然后使用文件中参数生成码垛程序;如果用户说没有配置文件,则按照设置参数的情景进行引导'},
 {'role':'user', 'content':'请帮我生成码垛程序'},
-{'role':'assistant', 'content':f'好的,请导入码垛参数的YAML文件'},
-{'role':'user', 'content':f'我会发给你一个包含所有参数的字典,例如{pallet_params_dict},请你完全按照如下格式复述字典中的参数: \
-"你导入的参数如下: {yaml_content}";导入参数之后,后台将会使用参数生成码垛程序,先问我要保存的python程序文件名(用palletize_xxx.py命名,并检查文件名), \
-然后复述python文件名,并按照如下格式展示要保存的py文件内容:\
-{python_content},你需要在输出这段代码前将params的值"..."替换成用户的参数配置(字典dict型)'},
+{'role':'assistant', 'content':f'好的,请导入参数YAML文件'},
+{'role':'user', 'content':f'我会发给你一个包含所有参数的字典,例如{pallet_params_dict},请你完全按照如下格式复述字典中的参数:"导入的参数如下: {yaml_content}";导入参数之后,后台将生成码垛程序,先问我要保存的python文件名(用palletize_xxx.py命名,并检查文件名),然后复述文件名,并按照如下格式展示要保存的文件内容:{python_content},你需要将params的值"..."替换成用户的参数配置(字典dict型)'},
 {'role':'assistant', 'content':'好的'}
 ]
 
 MSG_PALLETIZE_INTRO = [
-{'role':'system', 'content':'你是一个机器人软件助手,帮助用户控制一个6关节机器人完成码垛任务,\
-你有两个主要功能:1.引导用户逐步完成4类码垛参数的设置,\
-2.根据用户设置的参数自动生成码垛程序。\
-首先,一定要询问用户需要进行何种操作:1.设置码垛参数 2.生成码垛程序,\
-根据用户的选择,按照下文的情景a或b进行相应的引导'},
-{'role':'user', 'content':f'情景a:我要设置码垛参数,请模仿以下内容:{str(MSG_PALLETIZE_PARAM_CONFIG)}进行回答;\
-情景b:我要生成码垛程序,请模仿以下内容:{str(MSG_PALLETIZE_PROGRAM_GENERATION)}进行回答'},
+{'role':'system', 'content':'你是一个机器人助手,帮助用户控制机器人完成码垛任务,\
+你有两个主要功能:1.引导用户完成码垛参数的设置 2.根据用户的参数生成码垛程序。\
+首先,一定要询问用户需要进行何种操作:1.设置码垛参数 2.生成码垛程序,根据用户的选择,按照下文的情景a或b进行相应引导'},
+{'role':'user', 'content':f'情景a:我要设置参数,请模仿以下内容:{str(MSG_PALLETIZE_PARAM_CONFIG)}进行回答;\
+情景b:我要生成程序,请模仿以下内容:{str(MSG_PALLETIZE_PROGRAM_GENERATION)}进行回答'},
 {'role':'assistant', 'content':'好的'}
 ]
