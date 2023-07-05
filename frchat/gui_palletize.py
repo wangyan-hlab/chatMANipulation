@@ -15,10 +15,11 @@ class FRChatGUIPalletize(FRChatGUI):
         Data: 2023/05/23
     """
     
-    def __init__(self, title, width=1024, height=768, font=('Times New Roman', 10), robot_connect=False) -> None:
+    def __init__(self, title, width=1024, height=768, font=('Times New Roman', 10), 
+                 robot_connect=False, init_prompt=MSG_PALLETIZE_INTRO):
         super().__init__(title, width, height, font)
-        self.bot = FRChatBotPalletize(messages=MSG_PALLETIZE_INTRO,temperature=0.0)
-        self.init_prompt =  copy.deepcopy(MSG_PALLETIZE_INTRO)
+        self.bot = FRChatBotPalletize(messages=init_prompt,temperature=0.0)
+        self.init_prompt =  copy.deepcopy(init_prompt)
         # 文件保存相关
         self.yaml_name = None
         self.yaml_content = None

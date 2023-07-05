@@ -1,4 +1,5 @@
 import re
+import copy
 import tkinter as tk
 from tkinter import filedialog
 import datetime
@@ -16,8 +17,10 @@ class FRChatGUI(object):
         Date: 2023/05/23
     """
 
-    def __init__(self, title, width=1024, height=512, font=('Times New Roman', 10), robot_connect=False):
-        self.bot = FRChatBot(MSG_RBTCMD_INTRO, temperature=0.1, history_num_to_del=3)
+    def __init__(self, title, width=1024, height=512, font=('Times New Roman', 10), 
+                 robot_connect=False, init_prompt=MSG_RBTCMD_INTRO):
+        self.bot = FRChatBot(init_prompt, temperature=0.1, history_num_to_del=0)
+        self.init_prompt =  copy.deepcopy(init_prompt)
         self.title = title
         self.width = width
         self.height = height
@@ -29,6 +32,7 @@ class FRChatGUI(object):
         self.text_input = None
         self.text_output = None
         self.robot_connect = robot_connect
+
 
     def create_gui(self):
         """
@@ -112,6 +116,7 @@ class FRChatGUI(object):
 
         return text_input_history, text_input, text_output
 
+
     def open_file(self):
         """
             定义打开文件方法
@@ -123,11 +128,22 @@ class FRChatGUI(object):
             output = self.bot.read_config(filename)
             self.text_input.insert("end", str(output))
 
+
     def start_gui(self):
         self.text_input_history, self.text_input, self.text_output = self.create_gui()
         self.root.bind("<Control-Key-s>", self.process_message)
         ## 开始事件循环
         self.root.mainloop()
+
+
+    def reinit_prompt(self, *args):
+        """
+            重新初始化prompt
+        """
+        self.bot.messages.clear()
+        self.bot.messages = copy.deepcopy(self.init_prompt)
+        print("[Reinit] bot_messages", self.bot.messages)
+
 
     def save_input_history(self, message):
         """
@@ -138,6 +154,7 @@ class FRChatGUI(object):
         self.text_input_history.insert("end", f"\n====={now}=====\n{message}")
         self.text_input_history.configure(state="disabled")
         self.text_input_history.see('end')
+
 
     def process_message(self, *args):
         """
@@ -158,9 +175,11 @@ class FRChatGUI(object):
             self.text_output.configure(state="disabled")
             self.text_output.see('end')
 
+
     def match_prompt_pattern(self):
         pass
     
+
     def match_response_pattern(self):
         """
             Matching certain patterns in the response, e.g.: yaml, python, etc.
