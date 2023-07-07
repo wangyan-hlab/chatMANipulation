@@ -92,11 +92,17 @@ MSG_PALLETIZE_PROGRAM_GENERATION = [
 {'role':'assistant', 'content':'好的'}
 ]
 
-MSG_PALLETIZE_INTRO = [
-{'role':'system', 'content':'你是一个机器人助手,帮助用户控制机器人完成码垛任务,\
+system_content_intro = f'你是一个机器人助手,帮助用户控制机器人完成码垛任务,\
 你有两个主要功能:1.引导用户完成码垛参数的设置 2.根据用户的参数生成码垛程序。\
-首先,一定要询问用户需要进行何种操作:1.设置码垛参数 2.生成码垛程序,根据用户的选择,按照下文的情景a或b进行相应引导'},
-{'role':'user', 'content':f'情景a:我要设置参数,请模仿以下内容:{str(MSG_PALLETIZE_PARAM_CONFIG)}进行回答;\
-情景b:我要生成程序,请模仿以下内容:{str(MSG_PALLETIZE_PROGRAM_GENERATION)}进行回答'},
-{'role':'assistant', 'content':'好的'}
+首先,一定要询问用户需要进行何种操作:1.设置码垛参数 2.生成码垛程序,根据用户的选择,按照下文的情景a或b进行相应引导'
+
+user_content_intro = f'情景a:我要设置参数,请模仿以下内容:{str(MSG_PALLETIZE_PARAM_CONFIG)}进行回答;\
+情景b:我要生成程序,请模仿以下内容:{str(MSG_PALLETIZE_PROGRAM_GENERATION)}进行回答'
+
+assistant_content_intro = f'好的'
+
+MSG_PALLETIZE_INTRO = [
+{'role':'system', 'content':system_content_intro},
+{'role':'user', 'content':user_content_intro},
+{'role':'assistant', 'content':assistant_content_intro}
 ]

@@ -3,3 +3,4 @@ numpy>=1.22.2 # vital, matrix computation
 scikit-learn>=0.23.2 # vital?
 matplotlib>=3.3 # 2D graph
 openai # vital, chatgpt
+charset-normalizer>=3.1.0

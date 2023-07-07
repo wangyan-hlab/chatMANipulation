@@ -1,10 +1,15 @@
 import re
-import copy
 import tkinter as tk
 from tkinter import filedialog
 import datetime
-from frchat.bot import FRChatBot
-from frchat.init_prompt_rbtcmd import MSG_RBTCMD_INTRO
+from frchat.bot_langchain import FRChatBot
+from frchat.init_prompt_rbtcmd import MSG_RBTCMD_INTRO_LC
+from langchain.prompts import (
+    ChatPromptTemplate,
+    MessagesPlaceholder,
+    SystemMessagePromptTemplate,
+    HumanMessagePromptTemplate
+)
 
 
 class FRChatGUI(object):
@@ -12,13 +17,16 @@ class FRChatGUI(object):
         A GUI to use the FR ChatBot
 
         Author: wangyan, shujian, chatgpt
-        Date: 2023/05/23
+        Date: 2023/07/07
     """
 
     def __init__(self, title, width=1024, height=512, font=('Times New Roman', 10), 
-                 robot_connect=False, init_prompt=MSG_RBTCMD_INTRO):
-        self.bot = FRChatBot(init_prompt, temperature=0.1, history_num_to_del=0)
-        self.init_prompt =  copy.deepcopy(init_prompt)
+                 robot_connect=False, init_prompt=MSG_RBTCMD_INTRO_LC):
+        self.bot = FRChatBot(prompt=ChatPromptTemplate.from_messages([
+                                    SystemMessagePromptTemplate.from_template(init_prompt),
+                                    MessagesPlaceholder(variable_name="history"),
+                                    HumanMessagePromptTemplate.from_template("{input}")
+                                    ]))
         self.title = title
         self.width = width
         self.height = height
@@ -138,9 +146,8 @@ class FRChatGUI(object):
         """
             重新初始化prompt
         """
-        self.bot.messages.clear()
-        self.bot.messages = copy.deepcopy(self.init_prompt)
-        print("[Reinit] bot_messages", self.bot.messages)
+        self.bot.memory.clear()
+        print("[Reinit] bot_messages", self.bot.memory.load_memory_variables())
 
 
     def save_input_history(self, message):

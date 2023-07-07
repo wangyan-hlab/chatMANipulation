@@ -1,6 +1,6 @@
 import openai
 import yaml
-import os
+from frchat import openai_api_key
 
 class FRChatBot(object):
     """
@@ -20,7 +20,7 @@ class FRChatBot(object):
         self.model = model
         self.history_num_to_del = history_num_to_del
         self.message_history_index=0    # use index to delete several oldest messages
-        openai.api_key = os.getenv('OPENAI_API_KEY')
+        openai.api_key = openai_api_key
 
     def get_completion_from_messages(self, messages, temperature, model):
         response = openai.ChatCompletion.create(

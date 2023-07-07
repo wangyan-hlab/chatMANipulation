@@ -7,12 +7,7 @@ setup(
     author="wangyan",
     py_modules=[
         'fr_python_sdk.frrpc',
-        'frchat.bot',
-        'frchat.gui',
-        'frchat.bot_palletize',
-        'frchat.init_prompt_palletize',
-        'frchat.init_prompt_rbtcmd',
-        'frmovewrapper.frmove',
-        'frmovewrapper.robotmath'
+        'frchat.*',
+        'frmovewrapper.*',
     ]
 )
