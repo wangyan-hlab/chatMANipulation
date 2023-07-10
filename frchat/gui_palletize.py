@@ -2,7 +2,7 @@ import re
 import os
 import copy
 import tkinter as tk
-from frchat.gui import FRChatGUI
+from frchat.gui_rbtcmd import FRChatGUI
 from frchat.bot_palletize import FRChatBotPalletize
 from frchat.init_prompt_palletize import MSG_PALLETIZE_INTRO, WELCOME_TEXT
 

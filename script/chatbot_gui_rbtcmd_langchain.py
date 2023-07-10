@@ -1,4 +1,4 @@
-from frchat.gui_langchain import FRChatGUI
+from frchat.gui_rbtcmd_langchain import FRChatGUI
 
 if __name__ == "__main__":
     

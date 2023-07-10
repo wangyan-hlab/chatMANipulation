@@ -1,6 +1,6 @@
 import yaml
 from frchat import openai_api_key
-from frchat.bot_langchain import FRChatBot
+from frchat.bot_rbtcmd_langchain import FRChatBot
 from langchain.chains import ConversationChain
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory

@@ -3,7 +3,7 @@ import copy
 import tkinter as tk
 from tkinter import filedialog
 import datetime
-from frchat.bot import FRChatBot
+from frchat.bot_rbtcmd import FRChatBot
 from frchat.init_prompt_rbtcmd import MSG_RBTCMD_INTRO
 
 

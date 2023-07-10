@@ -1,5 +1,5 @@
 import yaml
-from frchat.bot import FRChatBot
+from frchat.bot_rbtcmd import FRChatBot
 
 class FRChatBotPalletize(FRChatBot):
     """
