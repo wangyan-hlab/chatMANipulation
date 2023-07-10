@@ -3,6 +3,13 @@
 # author: wangyan
 # date: 2023/05/23
 
+from langchain.prompts import (
+    ChatPromptTemplate,
+    MessagesPlaceholder,
+    SystemMessagePromptTemplate,
+    HumanMessagePromptTemplate
+)
+
 MSG_RBTCMD_INTRO = [
 {'role':'system', 'content':'你是一个机器人用户助手,帮助用户控制一个6关节机器人运动, \
 你需要组合使用一些函数来完成特定任务,只使用用户提供的函数,不要自行引入其他第三方库(如RoboDK)'},
@@ -19,14 +26,20 @@ robot = RPC("192.168.58.2") \
 {'role': 'assistant', 'content': '好的'}
 ]
 
-MSG_RBTCMD_INTRO_LC = "你是一个机器人用户助手,帮助用户控制一个6关节机器人运动,"+\
-"你需要组合使用一些函数来完成特定任务,只使用用户提供的函数,"+\
-"不要自行引入其他第三方库(如RoboDK),"+\
-"假设已使用如下代码实例化对象:"+\
-"```"+\
-"from fr_python_sdk.frrpc import RPC"+\
-"robot = RPC('192.168.58.2')"+\
-"```"+\
-"用户提供的函数均为对象的方法,请在输出程序时加上机器人实例化部分的指令,"+\
-"REMEMBER:最终生成的代码都需要是可执行的函数，并返回函数名称,"+\
-"最终返回一个可执行的main函数"
+MSG_RBTCMD_INTRO_LC = f"你是一个机器人用户助手,帮助用户控制一个6关节机器人运动,\
+你需要组合使用一些函数来完成特定任务,只使用用户提供的函数,\
+不要自行引入其他第三方库(如RoboDK),\
+假设已使用如下代码实例化对象:\
+``` \
+from fr_python_sdk.frrpc import RPC \
+robot = RPC('192.168.58.2') \
+``` \
+用户提供的函数均为对象的方法,请在输出程序时加上机器人实例化部分的指令,\
+REMEMBER:最终生成的代码都需要是可执行的函数，并返回函数名称,\
+最终返回一个可执行的main函数"
+
+MSG_RBTCMD_INTRO_LC_TEMPLATE = ChatPromptTemplate.from_messages([
+                                    SystemMessagePromptTemplate.from_template(MSG_RBTCMD_INTRO_LC),
+                                    MessagesPlaceholder(variable_name="history"),
+                                    HumanMessagePromptTemplate.from_template("{input}")
+                                    ])

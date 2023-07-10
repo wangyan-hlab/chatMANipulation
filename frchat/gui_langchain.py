@@ -3,13 +3,7 @@ import tkinter as tk
 from tkinter import filedialog
 import datetime
 from frchat.bot_langchain import FRChatBot
-from frchat.init_prompt_rbtcmd import MSG_RBTCMD_INTRO_LC
-from langchain.prompts import (
-    ChatPromptTemplate,
-    MessagesPlaceholder,
-    SystemMessagePromptTemplate,
-    HumanMessagePromptTemplate
-)
+from frchat.init_prompt_rbtcmd import MSG_RBTCMD_INTRO_LC_TEMPLATE
 
 
 class FRChatGUI(object):
@@ -21,12 +15,8 @@ class FRChatGUI(object):
     """
 
     def __init__(self, title, width=1024, height=512, font=('Times New Roman', 10), 
-                 robot_connect=False, init_prompt=MSG_RBTCMD_INTRO_LC):
-        self.bot = FRChatBot(prompt=ChatPromptTemplate.from_messages([
-                                    SystemMessagePromptTemplate.from_template(init_prompt),
-                                    MessagesPlaceholder(variable_name="history"),
-                                    HumanMessagePromptTemplate.from_template("{input}")
-                                    ]))
+                 robot_connect=False, init_prompt=MSG_RBTCMD_INTRO_LC_TEMPLATE):
+        self.bot = FRChatBot(prompt=init_prompt)
         self.title = title
         self.width = width
         self.height = height

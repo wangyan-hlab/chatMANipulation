@@ -4,13 +4,7 @@ import tkinter as tk
 from frchat.gui import FRChatGUI
 from frchat.bot_palletize_langchain import FRChatBotPalletize
 from frchat.init_prompt_palletize import WELCOME_TEXT, \
-    system_content_intro, user_content_intro, assistant_content_intro
-from langchain.prompts import (
-    ChatPromptTemplate,
-    MessagesPlaceholder,
-    SystemMessagePromptTemplate,
-    HumanMessagePromptTemplate
-)
+    system_content_intro_template, user_content_intro, assistant_content_intro
 
 
 class FRChatGUIPalletize(FRChatGUI):
@@ -22,13 +16,9 @@ class FRChatGUIPalletize(FRChatGUI):
     """
     
     def __init__(self, title, width=1024, height=768, font=('Times New Roman', 10), 
-                 robot_connect=False, init_prompt=system_content_intro):
+                 robot_connect=False, init_prompt=system_content_intro_template):
         super().__init__(title, width, height, font)
-        self.bot = FRChatBotPalletize(prompt=ChatPromptTemplate.from_messages([
-                                    SystemMessagePromptTemplate.from_template(init_prompt),
-                                    MessagesPlaceholder(variable_name="history"),
-                                    HumanMessagePromptTemplate.from_template("{input}")
-                                    ]))
+        self.bot = FRChatBotPalletize(prompt=init_prompt)
         self.bot.memory.save_context({'user':user_content_intro},
                                      {'assistant':assistant_content_intro})
         # 文件保存相关
