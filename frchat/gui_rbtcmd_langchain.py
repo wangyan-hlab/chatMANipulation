@@ -128,6 +128,7 @@ class FRChatGUI(object):
     def start_gui(self):
         self.text_input_history, self.text_input, self.text_output = self.create_gui()
         self.root.bind("<Control-Key-s>", self.process_message)
+        self.root.bind("<Control-Key-r>", self.reinit_prompt)
         ## 开始事件循环
         self.root.mainloop()
 
@@ -137,7 +138,7 @@ class FRChatGUI(object):
             重新初始化prompt
         """
         self.bot.memory.clear()
-        print("[Reinit] bot_messages", self.bot.memory.load_memory_variables())
+        print("[Reinit] bot_messages", self.bot.memory.load_memory_variables)
 
 
     def save_input_history(self, message):

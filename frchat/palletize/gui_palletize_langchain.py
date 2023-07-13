@@ -2,8 +2,8 @@ import re
 import os
 import tkinter as tk
 from frchat.gui_rbtcmd import FRChatGUI
-from frchat.bot_palletize_langchain import FRChatBotPalletize
-from frchat.init_prompt_palletize import WELCOME_TEXT, \
+from frchat.palletize.bot_palletize_langchain import FRChatBotPalletize
+from frchat.palletize.init_prompt_palletize import WELCOME_TEXT, \
     system_content_intro_template, user_content_intro, assistant_content_intro
 
 

@@ -1,7 +1,7 @@
 /.vscode
 /.idea
 /*.egg-info
-*/test*
+*/*test.py
 *record_*.txt
 *.pdf
 **/__pycache__

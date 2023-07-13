@@ -1,4 +1,4 @@
-from frchat.gui_palletize_langchain import FRChatGUIPalletize
+from frchat.palletize.gui_palletize_langchain import FRChatGUIPalletize
 
 if __name__ == "__main__":
     
